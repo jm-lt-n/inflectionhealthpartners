@@ -1158,9 +1158,7 @@
 
 <script>
   document.getElementById('contactForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    this.style.display = 'none';
-    document.getElementById('formSuccess').style.display = 'block';
+    // Allow form to submit to Formspree naturally — do not prevent default
   });
 
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
