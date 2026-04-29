@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inflection Health Partners | Healthcare Operational & Cultural Turnaround</title>
+<meta name="description" content="Inflection Health Partners specializes in operational and cultural turnarounds for healthcare organizations. Interim CEO, fractional executive, and advisory engagements.">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #1a1a2e;
+    --navy-mid: #16213e;
+    --navy-light: #0f3460;
+    --teal: #00d4aa;
+    --teal-dim: rgba(0,212,170,0.15);
+    --teal-glow: rgba(0,212,170,0.08);
+    --gold: #c9a84c;
+    --gold-dim: rgba(201,168,76,0.2);
+    --white: #ffffff;
+    --white-dim: rgba(255,255,255,0.7);
+    --white-muted: rgba(255,255,255,0.35);
+    --white-subtle: rgba(255,255,255,0.08);
+    --border: rgba(255,255,255,0.1);
+    --border-teal: rgba(0,212,170,0.25);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* GRID TEXTURE */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(0deg, transparent, transparent 80px, rgba(255,255,255,0.02) 80px, rgba(255,255,255,0.02) 81px),
+      repeating-linear-gradient(90deg, transparent, transparent 80px, rgba(255,255,255,0.02) 80px, rgba(255,255,255,0.02) 81px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding: 0 60px;
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(26,26,46,0.95);
+    border-bottom: 0.5px solid var(--border);
+    backdrop-filter: blur(12px);
+  }
+
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--white);
+    text-decoration: none;
+  }
+
+  .nav-logo span { color: var(--teal); }
+
+  .nav-links {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--white-dim);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--teal); }
+
+  .nav-cta {
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 24px;
+    border: 0.5px solid var(--teal);
+    color: var(--teal);
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .nav-cta:hover {
+    background: var(--teal);
+    color: var(--navy);
+  }
+
+  /* SECTIONS */
+  section {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 120px 60px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    right: -100px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(0,212,170,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-content { max-width: 720px; }
+
+  .hero-eyebrow {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .hero-eyebrow::before {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 0.5px;
+    background: var(--teal);
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(40px, 5vw, 68px);
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 28px;
+    letter-spacing: -0.5px;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--teal);
+  }
+
+  .hero-sub {
+    font-size: 18px;
+    color: var(--white-dim);
+    max-width: 520px;
+    margin-bottom: 48px;
+    font-weight: 300;
+    line-height: 1.7;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+  }
+
+  .btn-primary {
+    padding: 16px 36px;
+    background: var(--teal);
+    color: var(--navy);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.2s;
+    display: inline-block;
+  }
+
+  .btn-primary:hover { background: #00f0c0; }
+
+  .btn-ghost {
+    padding: 16px 36px;
+    border: 0.5px solid var(--white-muted);
+    color: var(--white-dim);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.2s;
+    display: inline-block;
+  }
+
+  .btn-ghost:hover {
+    border-color: var(--white-dim);
+    color: var(--white);
+  }
+
+  /* STATS STRIP */
+  .stats-strip {
+    background: var(--navy-mid);
+    border-top: 0.5px solid var(--border);
+    border-bottom: 0.5px solid var(--border);
+    padding: 40px 60px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+  }
+
+  .stat-item {
+    padding: 0 40px;
+    border-right: 0.5px solid var(--border);
+  }
+
+  .stat-item:first-child { padding-left: 0; }
+  .stat-item:last-child { border-right: none; }
+
+  .stat-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 42px;
+    font-weight: 700;
+    color: var(--teal);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: var(--white-muted);
+    letter-spacing: 0.5px;
+    line-height: 1.4;
+  }
+
+  /* PROBLEM */
+  .problem {
+    padding: 100px 60px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-label::before {
+    content: '';
+    display: block;
+    width: 24px;
+    height: 0.5px;
+    background: var(--teal);
+  }
+
+  .problem h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 3.5vw, 46px);
+    font-weight: 700;
+    line-height: 1.2;
+    max-width: 640px;
+    margin-bottom: 60px;
+    letter-spacing: -0.3px;
+  }
+
+  .problem-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    border: 0.5px solid var(--border);
+  }
+
+  .problem-item {
+    background: var(--navy);
+    padding: 36px 40px;
+    transition: background 0.2s;
+  }
+
+  .problem-item:hover { background: var(--white-subtle); }
+
+  .problem-item h3 {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--white);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .problem-item h3::before {
+    content: '';
+    display: block;
+    width: 6px;
+    height: 6px;
+    background: var(--teal);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .problem-item p {
+    font-size: 14px;
+    color: var(--white-muted);
+    line-height: 1.6;
+    padding-left: 16px;
+  }
+
+  .cost-callout {
+    margin-top: 48px;
+    padding: 32px 40px;
+    border-left: 3px solid var(--teal);
+    background: var(--teal-glow);
+  }
+
+  .cost-callout p {
+    font-size: 16px;
+    color: var(--white-dim);
+    line-height: 1.7;
+    font-style: italic;
+  }
+
+  .cost-callout strong { color: var(--white); font-style: normal; }
+
+  /* APPROACH */
+  .approach {
+    padding: 100px 60px;
+    background: var(--navy-mid);
+    border-top: 0.5px solid var(--border);
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .approach-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .approach h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 3.5vw, 46px);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 28px;
+    letter-spacing: -0.3px;
+  }
+
+  .approach-lead {
+    font-size: 16px;
+    color: var(--white-dim);
+    margin-bottom: 24px;
+    line-height: 1.7;
+  }
+
+  .approach-philosophy {
+    font-size: 14px;
+    color: var(--white-muted);
+    line-height: 1.8;
+  }
+
+  .approach-steps { }
+
+  .step {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 32px;
+    padding-bottom: 32px;
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .step:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .step-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--teal);
+    opacity: 0.4;
+    line-height: 1;
+    min-width: 40px;
+    padding-top: 2px;
+  }
+
+  .step-content h3 {
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 6px;
+    color: var(--white);
+  }
+
+  .step-content p {
+    font-size: 13px;
+    color: var(--white-muted);
+    line-height: 1.6;
+  }
+
+  /* SERVICES */
+  .services {
+    padding: 100px 60px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .services h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 3.5vw, 46px);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 60px;
+    letter-spacing: -0.3px;
+    max-width: 540px;
+  }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 0.5px solid var(--border);
+    margin-bottom: 32px;
+  }
+
+  .service-card {
+    background: var(--navy);
+    padding: 36px 32px;
+    transition: background 0.2s;
+  }
+
+  .service-card:hover { background: var(--white-subtle); }
+
+  .service-card.featured {
+    background: var(--teal-dim);
+    border: 0.5px solid var(--border-teal);
+  }
+
+  .service-badge {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--teal);
+    border: 0.5px solid var(--border-teal);
+    padding: 3px 10px;
+    display: inline-block;
+    margin-bottom: 16px;
+  }
+
+  .service-card h3 {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 10px;
+    color: var(--white);
+  }
+
+  .service-card p {
+    font-size: 13px;
+    color: var(--white-muted);
+    line-height: 1.6;
+    margin-bottom: 14px;
+  }
+
+  .service-detail {
+    font-size: 11px;
+    color: var(--teal);
+    opacity: 0.7;
+    letter-spacing: 0.5px;
+  }
+
+  .services-note {
+    font-size: 13px;
+    color: var(--white-muted);
+    padding: 20px 0;
+    border-top: 0.5px solid var(--border);
+    font-style: italic;
+  }
+
+  /* EXPERIENCE */
+  .experience {
+    padding: 100px 60px;
+    background: var(--navy-mid);
+    border-top: 0.5px solid var(--border);
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .experience-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .experience h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 3.5vw, 46px);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 16px;
+    letter-spacing: -0.3px;
+  }
+
+  .experience-context {
+    font-size: 16px;
+    color: var(--white-dim);
+    max-width: 680px;
+    margin-bottom: 48px;
+    line-height: 1.7;
+    font-style: italic;
+  }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 0.5px solid var(--border);
+    margin-bottom: 40px;
+  }
+
+  .result-item {
+    background: var(--navy);
+    padding: 28px 32px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .result-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--teal);
+    border-radius: 50%;
+    margin-top: 7px;
+    flex-shrink: 0;
+  }
+
+  .result-text {
+    font-size: 13px;
+    color: var(--white-dim);
+    line-height: 1.5;
+  }
+
+  .result-text strong {
+    color: var(--teal);
+    font-weight: 500;
+  }
+
+  .experience-quote {
+    padding: 32px 40px;
+    border-left: 3px solid var(--gold);
+    background: var(--gold-dim);
+  }
+
+  .experience-quote p {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    color: var(--white);
+    line-height: 1.6;
+    font-style: italic;
+    margin-bottom: 10px;
+  }
+
+  .experience-quote cite {
+    font-size: 12px;
+    color: var(--gold);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-style: normal;
+  }
+
+  /* PHILOSOPHY */
+  .philosophy {
+    padding: 100px 60px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .philosophy-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  .philosophy h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 3.5vw, 46px);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 28px;
+    letter-spacing: -0.3px;
+  }
+
+  .philosophy-body p {
+    font-size: 15px;
+    color: var(--white-dim);
+    line-height: 1.8;
+    margin-bottom: 20px;
+  }
+
+  .philosophy-body p:last-child { margin-bottom: 0; }
+
+  .philosophy-callout {
+    padding: 40px;
+    border: 0.5px solid var(--border-teal);
+    background: var(--teal-glow);
+  }
+
+  .philosophy-callout p {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    line-height: 1.6;
+    color: var(--white);
+    font-style: italic;
+    margin-bottom: 0;
+  }
+
+  /* CONTACT */
+  .contact {
+    padding: 100px 60px;
+    background: var(--navy-mid);
+    border-top: 0.5px solid var(--border);
+  }
+
+  .contact-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .contact h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 3.5vw, 46px);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    letter-spacing: -0.3px;
+  }
+
+  .contact-lead {
+    font-size: 15px;
+    color: var(--white-dim);
+    line-height: 1.7;
+    margin-bottom: 32px;
+  }
+
+  .contact-info { }
+
+  .contact-detail {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 0.5px solid var(--border);
+    font-size: 13px;
+    color: var(--white-dim);
+  }
+
+  .contact-detail:last-child { border-bottom: none; }
+
+  .contact-detail-label {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--teal);
+    min-width: 80px;
+  }
+
+  .contact-detail a {
+    color: var(--white-dim);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .contact-detail a:hover { color: var(--teal); }
+
+  /* FORM */
+  .contact-form { }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .form-group {
+    margin-bottom: 16px;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--white-muted);
+    margin-bottom: 8px;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    padding: 14px 16px;
+    background: rgba(255,255,255,0.05);
+    border: 0.5px solid var(--border);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+    -webkit-appearance: none;
+  }
+
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    border-color: var(--teal);
+    background: rgba(0,212,170,0.05);
+  }
+
+  .form-group select option { background: var(--navy-mid); }
+
+  .form-group textarea {
+    min-height: 120px;
+    resize: vertical;
+  }
+
+  .form-submit {
+    width: 100%;
+    padding: 18px;
+    background: var(--teal);
+    color: var(--navy);
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .form-submit:hover { background: #00f0c0; }
+
+  .form-note {
+    font-size: 11px;
+    color: var(--white-muted);
+    margin-top: 12px;
+    text-align: center;
+  }
+
+  /* SUCCESS MESSAGE */
+  .form-success {
+    display: none;
+    padding: 32px;
+    border: 0.5px solid var(--border-teal);
+    background: var(--teal-glow);
+    text-align: center;
+  }
+
+  .form-success h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    color: var(--teal);
+    margin-bottom: 10px;
+  }
+
+  .form-success p {
+    font-size: 14px;
+    color: var(--white-dim);
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 40px 60px;
+    border-top: 0.5px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 1px;
+  }
+
+  .footer-logo span { color: var(--teal); }
+
+  .footer-tagline {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0.6;
+  }
+
+  .footer-copy {
+    font-size: 11px;
+    color: var(--white-muted);
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-content { animation: fadeUp 0.8s ease forwards; }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    nav { padding: 0 24px; }
+    .nav-links { display: none; }
+    .hero { padding: 100px 24px 60px; }
+    .stats-strip { grid-template-columns: 1fr 1fr; padding: 32px 24px; gap: 24px; }
+    .stat-item { border-right: none; padding: 0; }
+    .problem, .services, .philosophy, .experience { padding: 60px 24px; }
+    .approach, .contact { padding: 60px 24px; }
+    .approach-inner, .contact-inner, .philosophy-grid { grid-template-columns: 1fr; gap: 40px; }
+    .services-grid { grid-template-columns: 1fr; }
+    .results-grid { grid-template-columns: 1fr; }
+    .problem-grid { grid-template-columns: 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+    footer { padding: 32px 24px; flex-direction: column; gap: 16px; text-align: center; }
+    .hero-actions { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">INFLECTION<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#approach">Approach</a></li>
+    <li><a href="fieldnotes.html">Field Notes</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Start a Conversation</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="hero-content">
+    <div class="hero-eyebrow">Healthcare Transformation Leader</div>
+    <h1>The problems we fix<br>are already costing you<br>more than <em>this engagement will.</em></h1>
+    <p class="hero-sub">We embed as interim executive leadership, diagnose what is actually driving dysfunction, and fix it at the root. We stay until the work is done.</p>
+    <div class="hero-actions">
+      <a href="#contact" class="btn-primary">Start a Conversation</a>
+      <a href="#approach" class="btn-ghost">How We Work</a>
+    </div>
+  </div>
+</section>
+
+
+<!-- PROBLEM -->
+<section class="problem" id="problem">
+  <div class="section-label">The Problem</div>
+  <h2>Healthcare organizations rarely fail because they lack talent.</h2>
+
+  <div class="problem-grid">
+    <div class="problem-item">
+      <h3>Clinical-operational misalignment</h3>
+      <p>Clinical and operational leadership pulling in different directions, slowing every decision and draining physician satisfaction.</p>
+    </div>
+    <div class="problem-item">
+      <h3>Staff turnover</h3>
+      <p>Turnover running 16 to 20% annually — with recruitment, onboarding, and lost productivity costs that compound quietly.</p>
+    </div>
+    <div class="problem-item">
+      <h3>Revenue cycle dysfunction</h3>
+      <p>Scheduling inefficiency, clinician underutilization, and revenue cycle breakdowns eroding income that never appears on a single line item.</p>
+    </div>
+    <div class="problem-item">
+      <h3>Accreditation and compliance risk</h3>
+      <p>Regulatory exposure and accreditation vulnerability that threaten the organization's ability to operate.</p>
+    </div>
+    <div class="problem-item">
+      <h3>Cultural dysfunction</h3>
+      <p>A demoralized culture producing defensive practice, higher incident rates, and patient experience failures.</p>
+    </div>
+    <div class="problem-item">
+      <h3>Operational knowledge gaps</h3>
+      <p>Critical knowledge living in people's heads rather than systems — making every departure a continuity crisis.</p>
+    </div>
+  </div>
+
+  <div class="cost-callout">
+    <p>The average hospital loses <strong>$60,090 per departing bedside RN.</strong> Revenue cycle dysfunction costs a typical $50M hospital <strong>$7.5M or more annually.</strong> US hospital labor costs increased <strong>$42.5 billion</strong> from 2021 to 2023. These losses are recoverable.</p>
+  </div>
+</section>
+
+<!-- APPROACH -->
+<section class="approach" id="approach">
+  <div class="approach-inner">
+    <div>
+      <div class="section-label">How We Work</div>
+      <h2>Embedded. Not advisory.</h2>
+      <p class="approach-lead">Most organizations in crisis don't need a report. They need someone who has actually run something hard — and who stays until it works.</p>
+      <p class="approach-philosophy">We enter as embedded interim leadership, not as outside consultants. That distinction matters. We are present for the resistance, the backsliding, and the moments when the old system tries to reassert itself. Culture doesn't change from a slide deck. It changes from sustained presence and consistent pressure in the right places.</p>
+    </div>
+    <div class="approach-steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-content">
+          <h3>30-Day Diagnostic</h3>
+          <p>We identify the real incentive structures and informal power networks — the things that are not spoken aloud. On-site observation, leadership interviews, process review, and a prioritized action plan.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-content">
+          <h3>Embedded Execution</h3>
+          <p>We embed as interim executive leadership with organizational authority. We execute alongside your team — not from a report, not from a conference room. We work on the front line.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-content">
+          <h3>Systems and Leadership</h3>
+          <p>We build the infrastructure — SOPs, reporting systems, leadership frameworks, incentive structures — that allows the organization to perform independent of any single person.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-content">
+          <h3>We Leave It Standing</h3>
+          <p>We stay until the systems and leadership are in place to carry it forward without us. The results outlast the engagement. That is the only test that matters.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services" id="services">
+  <div class="section-label">Services</div>
+  <h2>Engagements scoped to what the organization actually needs.</h2>
+
+  <div class="services-grid">
+    <div class="service-card featured">
+      <div class="service-badge">Entry Point</div>
+      <h3>Fractional Advisory</h3>
+      <p>Direct, ongoing access to senior operational expertise. Weekly availability for problem-solving, decision support, and guidance. On-site visits as needed.</p>
+      <div class="service-detail">Monthly retainer · no long-term commitment</div>
+    </div>
+    <div class="service-card">
+      <h3>Operational Diagnostic</h3>
+      <p>A focused 30-day assessment of your organization's operational and cultural health. Findings report and prioritized action plan delivered.</p>
+      <div class="service-detail">30 days · on-site and remote · flat fee</div>
+    </div>
+    <div class="service-card">
+      <h3>Operational Turnaround</h3>
+      <p>Embedded as interim operational leadership. Process restructuring, SOP development, scheduling optimization, accreditation readiness.</p>
+      <div class="service-detail">6 to 12 months · on-site · interim executive · scope dependent</div>
+    </div>
+    <div class="service-card">
+      <h3>Cultural Turnaround</h3>
+      <p>Leadership development, team alignment, and identification of hidden incentive structures driving dysfunction. The work that organizational change actually requires.</p>
+      <div class="service-detail">6 to 12 months · often concurrent · scope dependent</div>
+    </div>
+    <div class="service-card">
+      <h3>Clinical-Operational Alignment</h3>
+      <p>Targeted engagement closing the divide between clinical and administrative leadership — one of the most persistent and costly fault lines in healthcare.</p>
+      <div class="service-detail">6 to 12 weeks · scoped individually</div>
+    </div>
+    <div class="service-card">
+      <h3>Full Turnaround</h3>
+      <p>The complete engagement. Embedded interim leadership across operational and cultural dimensions, including leadership restructuring and succession planning.</p>
+      <div class="service-detail">6 to 18 months · dedicated presence · scope dependent</div>
+    </div>
+  </div>
+
+  <p class="services-note">All engagements begin with a no-cost discovery conversation. Pricing reflects embedded, results-oriented work — not billable hours. Contact us to discuss what's right for your situation.</p>
+</section>
+
+<!-- EXPERIENCE -->
+<section class="experience" id="experience">
+  <div class="experience-inner">
+    <div class="section-label">Representative Experience</div>
+    <h2>One of the hardest operational environments in healthcare.</h2>
+    <p class="experience-context">Led a 24-month operational and cultural turnaround of a 500-bed inpatient facility operating at the intersection of four distinct institutional authorities — state corrections, university healthcare, accreditation oversight, and a competing university controlling shared IT infrastructure — each with competing priorities and misaligned incentives.</p>
+
+    <div class="results-grid">
+      <div class="result-item">
+        <div class="result-dot"></div>
+        <div class="result-text">Achieved <strong>full re-accreditation</strong> under active multi-agency scrutiny</div>
+      </div>
+      <div class="result-item">
+        <div class="result-dot"></div>
+        <div class="result-text"><strong>22% increase</strong> in clinician engagement year-over-year</div>
+      </div>
+      <div class="result-item">
+        <div class="result-dot"></div>
+        <div class="result-text"><strong>58% reduction</strong> in agency nurse utilization — direct, sustained contract labor savings</div>
+      </div>
+      <div class="result-item">
+        <div class="result-dot"></div>
+        <div class="result-text">Rebuilt <strong>sector-wide clinical referral process</strong> and deployed 7 inpatient treatment track frameworks</div>
+      </div>
+      <div class="result-item">
+        <div class="result-dot"></div>
+        <div class="result-text">Achieved <strong>clinical-operational alignment</strong> across deeply entrenched divisions under sustained resistance</div>
+      </div>
+      <div class="result-item">
+        <div class="result-dot"></div>
+        <div class="result-text">Eliminated critical <strong>operational knowledge gaps</strong> through comprehensive SOP infrastructure</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- PHILOSOPHY -->
+<section class="philosophy" id="philosophy">
+  <div class="philosophy-grid">
+    <div>
+      <div class="section-label">Philosophy</div>
+      <h2>You cannot fix what you have not accurately named.</h2>
+    </div>
+    <div class="philosophy-body">
+      <p>Most organizations in decline aren't failing because they lack strategy. They're failing because the hidden incentives driving behavior aren't aligned with the organization's vision and mission.</p>
+      <p>The first thing we do when we walk into a failing organization is identify the real incentive structures and the informal power networks — the things that are not spoken aloud. We perform a 30-day diagnostic, name the problems, and build systems that realign incentives.</p>
+      <p>While doing systems-level work, we invest in individuals and develop leaders. Culture is an emergent phenomenon. The culture that emerges is shaped by systems and incentives. Change those, and the culture that emerges changes too.</p>
+      <div style="margin-top: 28px;">
+        <div class="philosophy-callout">
+          <p>Most organizations in crisis are already following their incentives — just not the ones written in the strategic plan. Identifying the actual incentive structures driving behavior, formal and informal, is where the real diagnostic work begins.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="contact-inner">
+    <div>
+      <div class="section-label">Contact</div>
+      <h2>Start with a conversation.</h2>
+      <p class="contact-lead">Every engagement begins with a no-cost discovery conversation. We scope all work to the specific needs of the organization. If you're not sure where to start, the 30-day diagnostic is designed for exactly that.</p>
+
+      <div class="contact-info">
+        <div class="contact-detail">
+          <span class="contact-detail-label">LinkedIn</span>
+          <a href="https://linkedin.com/in/inflectionhealthpartners" target="_blank">linkedin.com/in/inflectionhealthpartners</a>
+        </div>
+        <div class="contact-detail">
+          <span class="contact-detail-label">Location</span>
+          <span>Texas · Serving healthcare organizations nationally</span>
+        </div>
+        <div class="contact-detail">
+          <span class="contact-detail-label">Roles</span>
+          <span>Interim CEO · Contract CEO · Interim COO · Contract COO · Fractional · Advisory · Permanent</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="contact-form">
+      <form id="contactForm" action="https://formspree.io/f/xyklqkdb" method="POST">
+        <input type="hidden" name="_replyto" value="j.milton202@pm.me">
+        <input type="hidden" name="_subject" value="New inquiry — Inflection Health Partners">
+        <div class="form-row">
+          <div class="form-group">
+            <label>First Name</label>
+            <input type="text" name="first_name" required placeholder="Jonathan">
+          </div>
+          <div class="form-group">
+            <label>Last Name</label>
+            <input type="text" name="last_name" required placeholder="Smith">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Organization</label>
+          <input type="text" name="organization" required placeholder="Community Health System">
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" name="email" required placeholder="j.smith@organization.com">
+        </div>
+        <div class="form-group">
+          <label>What brings you here?</label>
+          <select name="engagement_type">
+            <option value="">Select one</option>
+            <option>Operational turnaround</option>
+            <option>Cultural turnaround</option>
+            <option>Clinical-operational alignment</option>
+            <option>Interim or contract CEO / COO</option>
+            <option>Fractional advisory</option>
+            <option>30-day diagnostic</option>
+            <option>Not sure yet</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Tell us about your situation</label>
+          <textarea name="message" placeholder="Describe what's happening in your organization — in plain terms, as if explaining it to a trusted friend outside of healthcare."></textarea>
+        </div>
+        <button type="submit" class="form-submit">Send Message</button>
+        <p class="form-note">Everything shared is confidential.</p>
+      </form>
+
+      <div class="form-success" id="formSuccess">
+        <h3>Message received.</h3>
+        <p>We'll be in touch within one business day to schedule a conversation.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-logo">INFLECTION<span> HEALTH PARTNERS</span></div>
+  </div>
+  <div class="footer-tagline">Healthcare Transformation</div>
+  <div class="footer-copy">&copy; 2026 Inflection Health Partners. All rights reserved.</div>
+</footer>
+
+<script>
+  document.getElementById('contactForm').addEventListener('submit', function(e) {
+    // Allow form to submit to Formspree naturally — do not prevent default
+  });
+
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+
+</body>
+</html>
