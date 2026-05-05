@@ -296,6 +296,13 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none; width:18px;
 </div>
 
 <script>
+  function fteChanged() {
+  const ftes = parseFloat(document.getElementById('agencyFTEs').value) || 0;
+  const hours = ftes * 2080;
+  document.getElementById('agencyHours').value = hours;
+  document.getElementById('hoursHint').textContent = `Auto-calculated: ${ftes} FTEs × 2,080 hrs = ${hours.toLocaleString()} hrs. Override by entering a different number.`;
+  calculate();
+}
 // ── SLIDER HELPERS ──────────────────────────────────────────────────────────
 function updateSliderHrs(id, displayId) {
   document.getElementById(displayId).textContent = document.getElementById(id).value + ' hrs';
