@@ -199,19 +199,19 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none; width:18px;
     <div class="section-label">Your Volume</div>
     <div class="input-grid">
       <div class="input-group">
-        <div class="input-label">Agency RN FTEs</div>
-        <div class="input-hint">Current agency RN headcount</div>
-        <div class="input-wrap">
-          <input type="number" id="agencyFTEs" value="10" min="0" max="500" oninput="calculate()" onchange="calculate()" style="padding-left:12px;">
-        </div>
-      </div>
-      <div class="input-group">
-        <div class="input-label">Total Agency RN Hours (Last 12 Mo)</div>
-        <div class="input-hint">Pull from your staffing system</div>
-        <div class="input-wrap">
-          <input type="number" id="agencyHours" value="20800" min="0" max="500000" oninput="calculate()" onchange="calculate()" style="padding-left:12px;">
-        </div>
-      </div>
+  <div class="input-label">Agency RN FTEs</div>
+  <div class="input-hint">Current agency RN headcount</div>
+  <div class="input-wrap">
+    <input type="number" id="agencyFTEs" value="10" min="0" max="500" oninput="fteChanged()" onchange="fteChanged()" style="padding-left:12px;">
+  </div>
+</div>
+<div class="input-group">
+  <div class="input-label">Total Agency RN Hours (Last 12 Mo)</div>
+  <div class="input-hint" id="hoursHint">Auto-calculated: 10 FTEs × 2,080 hrs = 20,800 hrs. Override by entering a different number.</div>
+  <div class="input-wrap">
+    <input type="number" id="agencyHours" value="20800" min="0" max="500000" oninput="calculate()" onchange="calculate()" style="padding-left:12px;">
+  </div>
+</div>
     </div>
 
     <hr class="calc-divider">
