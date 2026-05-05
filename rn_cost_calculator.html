@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Agency RN Cost Calculator | Inflection Health Partners</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-<style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script><style>
 :root {
   --navy: #1a3b66;
   --navy-mid: #16263d;
@@ -437,6 +437,117 @@ async function submitEmail() {
 function generatePDF(email) {
   const r = lastResults;
   const now = new Date().toLocaleDateString('en-US', {year:'numeric', month:'long', day:'numeric'});
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'portrait', unit: 'pt', format: 'letter' });
+  const W = 612, M = 48, CW = W - M*2;
+
+  doc.setFillColor(26, 59, 102);
+  doc.rect(0, 0, W, 72, 'F');
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(18);
+  doc.setTextColor(255,255,255);
+  doc.text('Agency RN Cost Analysis', M, 32);
+  doc.setFont('helvetica','normal');
+  doc.setFontSize(10);
+  doc.setTextColor(201,168,76);
+  doc.text('Inflection Health Partners  ·  ' + now, M, 52);
+
+  let y = 96;
+
+  function sectionTitle(title) {
+    doc.setFillColor(245, 247, 249);
+    doc.rect(M, y-12, CW, 20, 'F');
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(8);
+    doc.setTextColor(100,120,140);
+    doc.text(title.toUpperCase(), M+6, y+2);
+    y += 20;
+  }
+
+  function tableRow(label, val1, val2, shade) {
+    if (shade) { doc.setFillColor(248,250,252); doc.rect(M, y-11, CW, 20, 'F'); }
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(9);
+    doc.setTextColor(60,60,60);
+    doc.text(label, M+6, y+2);
+    doc.setFont('helvetica','bold');
+    doc.setTextColor(26,59,102);
+    doc.text(String(val1), M+200, y+2);
+    if (val2) { doc.setFont('helvetica','normal'); doc.setTextColor(120,130,140); doc.text(String(val2), M+310, y+2); }
+    doc.setDrawColor(220,225,230);
+    doc.line(M, y+9, M+CW, y+9);
+    y += 22;
+  }
+
+  function resultBox(label, value, color) {
+    const bw = (CW-16)/3;
+    const bx = M + (color === 'blue' ? 0 : color === 'red' ? bw+8 : (bw+8)*2);
+    doc.setFillColor(color==='blue'?238:color==='red'?253:237, color==='blue'?244:color==='red'?240:247, color==='blue'?251:color==='red'?240:241);
+    doc.rect(bx, y, bw, 52, 'F');
+    doc.setFillColor(color==='blue'?26:color==='red'?231:39, color==='blue'?82:color==='red'?76:174, color==='blue'?118:color==='red'?60:96);
+    doc.rect(bx, y, 3, 52, 'F');
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(20);
+    doc.setTextColor(color==='blue'?26:color==='red'?231:39, color==='blue'?82:color==='red'?76:174, color==='blue'?118:color==='red'?60:96);
+    doc.text(value, bx+10, y+28);
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(8);
+    doc.setTextColor(100,110,120);
+    doc.text(label, bx+10, y+44);
+  }
+
+  sectionTitle('Your Inputs');
+  tableRow('Staff RN hourly wage',             '$'+r.staffWage+'/hr',          'BLS OEWS 2024', true);
+  tableRow('Benefits & payroll tax rate',       r.benefitsRate+'%',             'Applied to base wage', false);
+  tableRow('Agency bill rate',                  '$'+r.agencyRate+'/hr',         'What facility pays agency', true);
+  tableRow('Monthly housing stipend (per RN)',  '$'+r.stipend.toLocaleString(), 'Funded within bill rate', false);
+  tableRow('Onboarding hours per contract',     r.onboardHrs+' hrs',            'Illustrative estimate', true);
+  tableRow('Productivity gap (weeks 1–4)',       r.prodGap+'%',                  'Illustrative estimate', false);
+  tableRow('Agency RN FTEs',                    String(r.agencyFTEs),           '', true);
+  tableRow('Total agency hours (last 12 mo)',   r.agencyHours.toLocaleString(), 'From your staffing system', false);
+
+  y += 12;
+  sectionTitle('Your Results');
+  y += 4;
+  resultBox('Staff RN fully loaded/hr', '$'+r.staffLoaded.toFixed(0)+'/hr', 'blue');
+  resultBox('Agency RN fully loaded/hr', '$'+r.agencyLoaded.toFixed(0)+'/hr', 'red');
+  resultBox('Cost multiplier', r.mult.toFixed(1)+'x', 'green');
+  y += 64;
+
+  tableRow('Cost differential per hour',       '$'+r.costDiffPerHour.toFixed(0)+'/hr more for agency', '', true);
+  tableRow('Annual agency cost premium',        '$'+Math.round(r.annualPremium).toLocaleString(),        '', false);
+  tableRow('Break-even retention investment',   '$'+Math.round(r.monthlyPremium).toLocaleString()+'/mo', 'Monthly spend that pays for itself', true);
+
+  y += 16;
+  doc.setFillColor(253,248,238);
+  doc.rect(M, y, CW, 54, 'F');
+  doc.setFillColor(201,168,76);
+  doc.rect(M, y, 3, 54, 'F');
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(8);
+  doc.setTextColor(60,50,20);
+  doc.text('Note:', M+10, y+14);
+  doc.setFont('helvetica','normal');
+  doc.setFontSize(8);
+  doc.setTextColor(80,70,40);
+  const noteLines = doc.splitTextToSize(
+    'These figures are modeled estimates based on your inputs and illustrative assumptions (onboarding hours, productivity gap). Actual costs vary by market, specialty, and contract structure. Use this analysis as a starting point for discussion with your leadership team.',
+    CW-20
+  );
+  doc.text(noteLines, M+10, y+26);
+  y += 70;
+
+  doc.setDrawColor(220,225,230);
+  doc.line(M, y, M+CW, y);
+  y += 14;
+  doc.setFont('helvetica','normal');
+  doc.setFontSize(8);
+  doc.setTextColor(160,160,160);
+  doc.text('Inflection Health Partners  ·  inflectionhealthpartners.com', M, y);
+  doc.text('Generated '+now+' for '+email, M+CW, y, {align:'right'});
+
+  doc.save('Agency_RN_Cost_Analysis_IHP.pdf');
+});
 
   const html = `<!DOCTYPE html><html><head><meta charset="UTF-8">
   <style>
