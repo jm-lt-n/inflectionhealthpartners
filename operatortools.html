@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Operator Tools | Inflection Health Partners</title>
+<meta name="description" content="Free calculators and diagnostic tools for healthcare operators. Built by Inflection Health Partners.">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #1a3b66;
+  --navy-mid: #16263d;
+  --gold: #c9a84c;
+  --white: #ffffff;
+  --dim: rgba(255,255,255,0.65);
+  --muted: rgba(255,255,255,0.3);
+  --border: rgba(255,255,255,0.08);
+  --teal: #00d4aa;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'DM Sans',sans-serif; background:var(--navy); color:var(--white); min-height:100vh; }
+body::before {
+  content:''; position:fixed; inset:0;
+  background: repeating-linear-gradient(0deg,transparent,transparent 80px,rgba(255,255,255,0.012) 80px,rgba(255,255,255,0.012) 81px),
+    repeating-linear-gradient(90deg,transparent,transparent 80px,rgba(255,255,255,0.012) 80px,rgba(255,255,255,0.012) 81px);
+  pointer-events:none; z-index:0;
+}
+
+/* NAV */
+nav {
+  position:sticky; top:0; z-index:100;
+  background:rgba(26,59,102,0.97);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(12px);
+  padding:0 40px; height:60px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.nav-brand { font-family:'DM Serif Display',serif; font-size:16px; color:var(--white); text-decoration:none; }
+.nav-links { display:flex; align-items:center; gap:32px; }
+.nav-links a { font-size:12px; color:var(--dim); text-decoration:none; letter-spacing:0.5px; transition:color 0.2s; }
+.nav-links a:hover, .nav-links a.active { color:var(--gold); }
+.nav-cta { font-size:11px; letter-spacing:1px; text-transform:uppercase; color:var(--gold); border:1px solid rgba(201,168,76,0.4); padding:7px 16px; text-decoration:none; transition:all 0.2s; }
+.nav-cta:hover { background:var(--gold); color:var(--navy); }
+
+/* HERO */
+.wrapper { position:relative; z-index:1; max-width:960px; margin:0 auto; padding:0 32px 80px; }
+.hero { padding:64px 0 48px; border-bottom:1px solid var(--border); margin-bottom:48px; }
+.hero-eyebrow { font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--teal); margin-bottom:16px; display:flex; align-items:center; gap:10px; }
+.hero-eyebrow::before { content:''; display:block; width:20px; height:1px; background:var(--teal); }
+.hero-title { font-family:'DM Serif Display',serif; font-size:clamp(32px,5vw,52px); line-height:1.1; margin-bottom:16px; }
+.hero-title em { font-style:italic; color:var(--gold); }
+.hero-sub { font-size:15px; color:var(--dim); max-width:600px; line-height:1.7; font-weight:300; }
+
+/* TOOL GRID */
+.tools-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:48px; }
+.tool-card {
+  background:var(--navy-mid);
+  border:1px solid var(--border);
+  padding:28px;
+  text-decoration:none;
+  color:var(--white);
+  display:flex;
+  flex-direction:column;
+  transition:border-color 0.2s, background 0.2s;
+  position:relative;
+  overflow:hidden;
+}
+.tool-card::before {
+  content:'';
+  position:absolute;
+  top:0; left:0; right:0;
+  height:2px;
+  background:var(--gold);
+}
+.tool-card.coming-soon::before { background:var(--border); }
+.tool-card:hover:not(.coming-soon) { border-color:rgba(201,168,76,0.3); background:rgba(255,255,255,0.03); }
+.tool-tag { font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--gold); margin-bottom:12px; }
+.tool-card.coming-soon .tool-tag { color:var(--muted); }
+.tool-title { font-family:'DM Serif Display',serif; font-size:20px; margin-bottom:10px; line-height:1.2; }
+.tool-desc { font-size:13px; color:var(--dim); line-height:1.6; margin-bottom:20px; flex:1; }
+.tool-cta {
+  display:inline-flex; align-items:center; gap:8px;
+  font-size:11px; letter-spacing:1px; text-transform:uppercase;
+  color:var(--gold); font-weight:600;
+}
+.tool-card.coming-soon .tool-cta { color:var(--muted); }
+.tool-badge {
+  position:absolute; top:16px; right:16px;
+  font-size:9px; letter-spacing:1.5px; text-transform:uppercase;
+  padding:3px 8px; background:rgba(0,212,170,0.15); color:var(--teal);
+}
+.tool-badge.soon { background:rgba(255,255,255,0.05); color:var(--muted); }
+
+/* BOTTOM CTA */
+.bottom-cta {
+  background:var(--navy-mid);
+  border:1px solid rgba(201,168,76,0.2);
+  padding:40px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:32px;
+}
+.bottom-cta h3 { font-family:'DM Serif Display',serif; font-size:22px; margin-bottom:8px; }
+.bottom-cta p { font-size:13px; color:var(--dim); max-width:460px; line-height:1.6; }
+.bottom-btn { display:inline-block; padding:14px 32px; background:var(--gold); color:var(--navy); font-size:11px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; text-decoration:none; white-space:nowrap; }
+
+footer { position:relative; z-index:1; border-top:1px solid var(--border); padding:20px 40px; display:flex; justify-content:space-between; align-items:center; font-size:11px; color:var(--muted); }
+.footer-gold { color:var(--gold); }
+
+@media(max-width:680px) { .tools-grid { grid-template-columns:1fr; } .bottom-cta { flex-direction:column; } nav { padding:0 20px; } .wrapper { padding:0 20px 60px; } }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-brand">Inflection Health Partners</a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="fieldnotes.html">Field Notes</a>
+    <a href="operatortools.html" class="active">Operator Tools</a>
+    <a href="index.html#contact" class="nav-cta">Work With Us</a>
+  </div>
+</nav>
+
+<div class="wrapper">
+  <div class="hero">
+    <div class="hero-eyebrow">Operator Tools</div>
+    <h1 class="hero-title">Free tools for healthcare <em>operators</em></h1>
+    <p class="hero-sub">Calculators and diagnostic frameworks built for the people running healthcare organizations — not consulting firms running studies about them. Use them. Share them. No login required.</p>
+  </div>
+
+  <div class="tools-grid">
+
+    <!-- TOOL 1 — Agency RN Cost Calculator -->
+    <a href="rn_cost_calculator.html" class="tool-card">
+      <div class="tool-badge">Free</div>
+      <div class="tool-tag">Labor Economics</div>
+      <div class="tool-title">Agency RN Cost Calculator</div>
+      <p class="tool-desc">The bill rate is what the agency charges. This calculator shows the full loaded cost — stipends, onboarding, productivity gap, and the turnover your dependency is quietly driving. Enter your numbers, see your break-even point.</p>
+      <div class="tool-cta">Open Calculator →</div>
+    </a>
+
+    <!-- TOOL 2 — Staffing Waste Calculator -->
+    <a href="staffing_calculator.html" class="tool-card">
+      <div class="tool-badge">Free</div>
+      <div class="tool-tag">Staffing Strategy</div>
+      <div class="tool-title">Staffing Waste Calculator</div>
+      <p class="tool-desc">How much is agency dependency actually costing across your RN and LVN workforce? Input your headcount, wages, and agency utilization — see the full loaded cost comparison and annual savings potential.</p>
+      <div class="tool-cta">Open Calculator →</div>
+    </a>
+
+    <!-- COMING SOON 1 -->
+    <div class="tool-card coming-soon">
+      <div class="tool-badge soon">Coming Soon</div>
+      <div class="tool-tag">Revenue Cycle</div>
+      <div class="tool-title">Revenue Cycle Diagnostic</div>
+      <p class="tool-desc">A structured diagnostic for identifying where your revenue cycle is leaking — by payer, service line, and provider. Built for operators who need to see the problem before they can fix it.</p>
+      <div class="tool-cta">Coming Soon</div>
+    </div>
+
+    <!-- COMING SOON 2 -->
+    <div class="tool-card coming-soon">
+      <div class="tool-badge soon">Coming Soon</div>
+      <div class="tool-tag">Clinical Operations</div>
+      <div class="tool-title">LVN Utilization Audit</div>
+      <p class="tool-desc">A shift-level task audit tool for identifying where RNs are performing LVN-scope work — and quantifying the cost of that misallocation in your specific organization.</p>
+      <div class="tool-cta">Coming Soon</div>
+    </div>
+
+  </div>
+
+  <div class="bottom-cta">
+    <div>
+      <h3>The tools are the starting point.</h3>
+      <p>The numbers tell you where the problem is. The harder work is fixing the incentive structures that created it. That's where we come in.</p>
+    </div>
+    <a href="index.html#contact" class="bottom-btn">Work With Us</a>
+  </div>
+</div>
+
+<footer>
+  <div>Inflection Health Partners · Healthcare Operational Turnaround · Lubbock, Texas</div>
+  <div class="footer-gold">inflectionhealthpartners.com</div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agency RN Cost Calculator | Inflection Health Partners</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #1a3b66;
+  --navy-mid: #16263d;
+  --navy-light: #1e3352;
+  --gold: #c9a84c;
+  --gold-dim: rgba(201,168,76,0.12);
+  --white: #ffffff;
+  --dim: rgba(255,255,255,0.65);
+  --muted: rgba(255,255,255,0.3);
+  --border: rgba(255,255,255,0.08);
+  --red: #e74c3c;
+  --red-dim: rgba(231,76,60,0.1);
+  --green: #27ae60;
+  --green-dim: rgba(39,174,96,0.1);
+  --slate: #1a5276;
+  --teal: #00d4aa;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'DM Sans',sans-serif; background:var(--navy); color:var(--white); min-height:100vh; }
+body::before {
+  content:''; position:fixed; inset:0;
+  background: radial-gradient(ellipse 80% 50% at 20% 20%, rgba(201,168,76,0.04) 0%, transparent 60%),
+    repeating-linear-gradient(0deg,transparent,transparent 80px,rgba(255,255,255,0.012) 80px,rgba(255,255,255,0.012) 81px),
+    repeating-linear-gradient(90deg,transparent,transparent 80px,rgba(255,255,255,0.012) 80px,rgba(255,255,255,0.012) 81px);
+  pointer-events:none; z-index:0;
+}
+.wrapper { position:relative; z-index:1; max-width:860px; margin:0 auto; padding:0 24px 80px; }
+.site-header { padding:32px 0 24px; display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:48px; border-bottom:1px solid var(--border); }
+.header-brand { font-family:'DM Serif Display',serif; font-size:15px; color:var(--white); }
+.header-sub { font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--gold); margin-top:3px; }
+.header-link { font-size:11px; color:var(--muted); text-decoration:none; transition:color 0.2s; }
+.header-link:hover { color:var(--gold); }
+.hero { margin-bottom:40px; }
+.hero-eyebrow { font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--teal); margin-bottom:16px; display:flex; align-items:center; gap:10px; }
+.hero-eyebrow::before { content:''; display:block; width:20px; height:1px; background:var(--teal); }
+.hero-title { font-family:'DM Serif Display',serif; font-size:clamp(28px,5vw,46px); line-height:1.1; margin-bottom:14px; }
+.hero-title em { font-style:italic; color:var(--gold); }
+.hero-sub { font-size:14px; color:var(--dim); max-width:580px; line-height:1.7; font-weight:300; }
+.calc-card { background:var(--navy-mid); border:1px solid var(--border); padding:36px; margin-bottom:20px; }
+.section-label { font-size:9px; letter-spacing:3px; text-transform:uppercase; color:var(--gold); margin-bottom:20px; display:flex; align-items:center; gap:10px; }
+.section-label::after { content:''; flex:1; height:1px; background:var(--gold-dim); }
+.input-grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:8px; }
+.input-group { display:flex; flex-direction:column; gap:7px; }
+.input-label { font-size:11px; color:var(--dim); font-weight:500; }
+.input-hint { font-size:10px; color:var(--muted); margin-top:-3px; }
+.input-wrap { position:relative; display:flex; align-items:center; }
+.input-prefix, .input-suffix { position:absolute; font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--gold); pointer-events:none; }
+.input-prefix { left:12px; }
+.input-suffix { right:12px; }
+input[type="number"] { width:100%; background:rgba(255,255,255,0.04); border:1px solid var(--border); color:var(--white); font-family:'JetBrains Mono',monospace; font-size:15px; padding:11px 36px 11px 32px; outline:none; transition:border-color 0.2s; -moz-appearance:textfield; }
+input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance:none; }
+input[type="number"]:focus { border-color:var(--gold); background:rgba(201,168,76,0.04); }
+.slider-group { margin-bottom:0; }
+.slider-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:9px; }
+.slider-value { font-family:'JetBrains Mono',monospace; font-size:17px; color:var(--gold); font-weight:600; }
+input[type="range"] { width:100%; -webkit-appearance:none; height:4px; background:var(--border); outline:none; border-radius:2px; }
+input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none; width:18px; height:18px; border-radius:50%; background:var(--gold); cursor:pointer; border:2px solid var(--navy); box-shadow:0 0 8px rgba(201,168,76,0.4); }
+.calc-divider { border:none; border-top:1px solid var(--border); margin:28px 0; }
+.results-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin-bottom:24px; }
+.result-card { background:rgba(255,255,255,0.03); border:1px solid var(--border); padding:18px 14px; }
+.result-card.highlight { background:var(--red-dim); border-color:rgba(231,76,60,0.3); }
+.result-card.positive { background:var(--green-dim); border-color:rgba(39,174,96,0.3); }
+.result-label { font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-bottom:8px; line-height:1.4; }
+.result-value { font-family:'JetBrains Mono',monospace; font-size:24px; font-weight:600; line-height:1; margin-bottom:5px; }
+.result-card.highlight .result-value { color:var(--red); }
+.result-card.positive .result-value { color:var(--green); }
+.result-card .result-value { color:var(--white); }
+.result-sub { font-size:10px; color:var(--muted); line-height:1.4; }
+.insight-box { border-left:3px solid var(--gold); background:var(--gold-dim); padding:18px 22px; margin-bottom:28px; }
+.insight-title { font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--gold); margin-bottom:8px; }
+.insight-text { font-size:13px; color:var(--dim); line-height:1.7; }
+.insight-text strong { color:var(--white); }
+
+/* EMAIL GATE MODAL */
+.modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:1000; align-items:center; justify-content:center; }
+.modal-overlay.active { display:flex; }
+.modal { background:var(--navy-mid); border:1px solid var(--border); border-top:3px solid var(--gold); padding:40px; max-width:480px; width:90%; }
+.modal-title { font-family:'DM Serif Display',serif; font-size:22px; margin-bottom:8px; }
+.modal-sub { font-size:13px; color:var(--dim); margin-bottom:24px; line-height:1.6; }
+.modal-input { width:100%; background:rgba(255,255,255,0.06); border:1px solid var(--border); color:var(--white); font-family:'DM Sans',sans-serif; font-size:14px; padding:12px 16px; outline:none; margin-bottom:14px; }
+.modal-input:focus { border-color:var(--gold); }
+.modal-btn { width:100%; padding:14px; background:var(--gold); color:var(--navy); font-size:11px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; border:none; cursor:pointer; font-family:'DM Sans',sans-serif; transition:background 0.2s; }
+.modal-btn:hover { background:#dbb85a; }
+.modal-btn:disabled { background:#888; cursor:not-allowed; }
+.modal-cancel { display:block; text-align:center; margin-top:12px; font-size:11px; color:var(--muted); cursor:pointer; }
+.modal-cancel:hover { color:var(--dim); }
+.modal-success { display:none; text-align:center; }
+.modal-success .check { font-size:48px; margin-bottom:16px; }
+.modal-success p { font-size:14px; color:var(--dim); line-height:1.6; }
+
+/* PDF BUTTON */
+.pdf-btn { display:inline-flex; align-items:center; gap:8px; padding:14px 28px; background:transparent; border:1px solid var(--gold); color:var(--gold); font-size:11px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; cursor:pointer; font-family:'DM Sans',sans-serif; transition:all 0.2s; }
+.pdf-btn:hover { background:var(--gold); color:var(--navy); }
+
+.cta-section { background:var(--navy-mid); border:1px solid rgba(201,168,76,0.2); padding:32px 36px; display:flex; justify-content:space-between; align-items:center; gap:28px; }
+.cta-text h3 { font-family:'DM Serif Display',serif; font-size:20px; margin-bottom:6px; }
+.cta-text p { font-size:12px; color:var(--dim); max-width:420px; line-height:1.6; }
+.cta-link { display:inline-block; padding:13px 28px; background:var(--gold); color:var(--navy); font-size:11px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; text-decoration:none; white-space:nowrap; }
+.site-footer { position:relative; z-index:1; border-top:1px solid var(--border); padding:20px 24px; display:flex; justify-content:space-between; align-items:center; font-size:11px; color:var(--muted); max-width:860px; margin:0 auto; }
+.footer-gold { color:var(--gold); }
+.mono { font-family:'JetBrains Mono',monospace; }
+
+@media(max-width:640px) { .input-grid { grid-template-columns:1fr; } .results-grid { grid-template-columns:1fr; } .cta-section { flex-direction:column; } }
+</style>
+</head>
+<body>
+
+<div class="wrapper">
+  <header class="site-header">
+    <div>
+      <div class="header-brand">Inflection Health Partners</div>
+      <div class="header-sub">Healthcare Operational Turnaround</div>
+    </div>
+    <a href="https://inflectionhealthpartners.com" class="header-link">inflectionhealthpartners.com →</a>
+  </header>
+
+  <div class="hero">
+    <div class="hero-eyebrow">Agency RN Cost Calculator</div>
+    <h1 class="hero-title">What are your agency RNs <em>actually</em> costing?</h1>
+    <p class="hero-sub">The bill rate is what the agency charges. This calculator shows the full loaded cost — including stipends, onboarding, productivity gap, and the turnover your agency dependency is quietly driving. Enter your numbers below.</p>
+  </div>
+
+  <div class="calc-card">
+    <div class="section-label">Your Staff RN Economics</div>
+    <div class="input-grid">
+      <div class="input-group">
+        <div class="input-label">Staff RN Hourly Wage</div>
+        <div class="input-hint">Average base wage for employed RNs</div>
+        <div class="input-wrap">
+          <span class="input-prefix">$</span>
+          <input type="number" id="staffWage" value="40" min="20" max="100" oninput="calculate()" onchange="calculate()">
+          <span class="input-suffix">/hr</span>
+        </div>
+      </div>
+      <div class="input-group">
+        <div class="input-label">Benefits & Payroll Tax Rate</div>
+        <div class="input-hint">As % of base wage (typical: 28–32%)</div>
+        <div class="input-wrap">
+          <input type="number" id="benefitsRate" value="30" min="15" max="50" oninput="calculate()" onchange="calculate()" style="padding-left:12px;">
+          <span class="input-suffix">%</span>
+        </div>
+      </div>
+    </div>
+
+    <hr class="calc-divider">
+    <div class="section-label">Your Agency RN Economics</div>
+    <div class="input-grid">
+      <div class="input-group">
+        <div class="input-label">Agency Bill Rate</div>
+        <div class="input-hint">What you pay the agency per hour</div>
+        <div class="input-wrap">
+          <span class="input-prefix">$</span>
+          <input type="number" id="agencyRate" value="72" min="40" max="200" oninput="calculate()" onchange="calculate()">
+          <span class="input-suffix">/hr</span>
+        </div>
+      </div>
+      <div class="input-group">
+        <div class="input-label">Monthly Housing Stipend (per RN)</div>
+        <div class="input-hint">Funded within bill rate; typical $1,500–2,500</div>
+        <div class="input-wrap">
+          <span class="input-prefix">$</span>
+          <input type="number" id="stipend" value="2000" min="0" max="5000" oninput="calculate()" onchange="calculate()">
+          <span class="input-suffix">/mo</span>
+        </div>
+      </div>
+    </div>
+
+    <hr class="calc-divider">
+    <div class="section-label">Modeled Assumptions (Adjust as Needed)</div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:8px;">
+      <div class="slider-group">
+        <div class="slider-header">
+          <div class="input-label">Onboarding Hours per Contract</div>
+          <div class="slider-value" id="onboardDisplay">12 hrs</div>
+        </div>
+        <input type="range" id="onboardHours" min="4" max="40" value="12" oninput="updateSliderHrs('onboardHours','onboardDisplay'); calculate()">
+        <div class="input-hint" style="margin-top:6px;">Hours of orientation per 13-week contract cycle</div>
+      </div>
+      <div class="slider-group">
+        <div class="slider-header">
+          <div class="input-label">Productivity Gap (Weeks 1–4)</div>
+          <div class="slider-value" id="prodDisplay">20%</div>
+        </div>
+        <input type="range" id="prodGap" min="5" max="40" value="20" oninput="updateSliderPct('prodGap','prodDisplay'); calculate()">
+        <div class="input-hint" style="margin-top:6px;">Illustrative estimate; agency RNs ramp on new unit</div>
+      </div>
+    </div>
+
+    <hr class="calc-divider">
+    <div class="section-label">Your Volume</div>
+    <div class="input-grid">
+      <div class="input-group">
+        <div class="input-label">Agency RN FTEs</div>
+        <div class="input-hint">Current agency RN headcount</div>
+        <div class="input-wrap">
+          <input type="number" id="agencyFTEs" value="10" min="0" max="500" oninput="calculate()" onchange="calculate()" style="padding-left:12px;">
+        </div>
+      </div>
+      <div class="input-group">
+        <div class="input-label">Total Agency RN Hours (Last 12 Mo)</div>
+        <div class="input-hint">Pull from your staffing system</div>
+        <div class="input-wrap">
+          <input type="number" id="agencyHours" value="20800" min="0" max="500000" oninput="calculate()" onchange="calculate()" style="padding-left:12px;">
+        </div>
+      </div>
+    </div>
+
+    <hr class="calc-divider">
+    <div class="section-label">Results</div>
+
+    <div class="results-grid">
+      <div class="result-card">
+        <div class="result-label">Staff RN<br>Fully Loaded Cost</div>
+        <div class="result-value" id="staffLoaded">—</div>
+        <div class="result-sub">Per productive hour</div>
+      </div>
+      <div class="result-card highlight">
+        <div class="result-label">Agency RN<br>Fully Loaded Cost</div>
+        <div class="result-value" id="agencyLoaded">—</div>
+        <div class="result-sub">Per productive hour</div>
+      </div>
+      <div class="result-card positive">
+        <div class="result-label">Cost<br>Multiplier</div>
+        <div class="result-value" id="multiplier">—</div>
+        <div class="result-sub">Agency vs. staff fully loaded</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px;">
+      <div class="result-card highlight">
+        <div class="result-label">Annual Agency Cost Premium</div>
+        <div class="result-value" id="annualPremium">—</div>
+        <div class="result-sub">What you'd save replacing agency with employed RNs</div>
+      </div>
+      <div class="result-card">
+        <div class="result-label">Break-Even Retention Investment</div>
+        <div class="result-value" id="breakEven">—</div>
+        <div class="result-sub">Monthly retention spend that pays for itself vs. agency premium</div>
+      </div>
+    </div>
+
+    <div class="insight-box">
+      <div class="insight-title">Diagnostic Insight</div>
+      <div class="insight-text" id="insightText">Enter your numbers above to see your personalized insight.</div>
+    </div>
+
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+      <div style="font-size:12px;color:var(--muted);max-width:460px;line-height:1.5;">
+        Results are modeled estimates based on your inputs and illustrative assumptions. Actual costs vary by market, specialty, and contract structure.
+      </div>
+      <button class="pdf-btn" onclick="openModal()">
+        ↓ Download PDF of Results
+      </button>
+    </div>
+  </div>
+
+  <div class="cta-section">
+    <div class="cta-text">
+      <h3>Ready to make agencies unnecessary?</h3>
+      <p>These numbers are the starting point. The harder question is why the dependency exists — and whether it's a retention problem, a job design problem, or a leadership problem.</p>
+    </div>
+    <a href="https://inflectionhealthpartners.com/#contact" class="cta-link">Start a Conversation</a>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div>Inflection Health Partners · Healthcare Operational Turnaround · Lubbock, Texas</div>
+  <div class="footer-gold">inflectionhealthpartners.com</div>
+</footer>
+
+<!-- EMAIL GATE MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div id="modalForm">
+      <div class="modal-title">Download Your Results</div>
+      <div class="modal-sub">Enter your email to receive a PDF summary of your agency RN cost analysis — formatted for your finance or leadership team.</div>
+      <input type="email" class="modal-input" id="modalEmail" placeholder="your@email.com">
+      <button class="modal-btn" id="modalSubmitBtn" onclick="submitEmail()">Send Me the PDF</button>
+      <span class="modal-cancel" onclick="closeModal()">No thanks, close</span>
+    </div>
+    <div class="modal-success" id="modalSuccess">
+      <div class="check">✓</div>
+      <p>You're on the list. Your PDF is downloading now.<br><br>
+      You'll also receive occasional frameworks and tools for healthcare operators from Inflection Health Partners.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── SLIDER HELPERS ──────────────────────────────────────────────────────────
+function updateSliderHrs(id, displayId) {
+  document.getElementById(displayId).textContent = document.getElementById(id).value + ' hrs';
+}
+function updateSliderPct(id, displayId) {
+  document.getElementById(displayId).textContent = document.getElementById(id).value + '%';
+}
+
+function fmt(n) { return '$' + Math.round(n).toLocaleString(); }
+function fmtHr(n) { return '$' + n.toFixed(0) + '/hr'; }
+
+// ── STORED RESULTS FOR PDF ──────────────────────────────────────────────────
+let lastResults = {};
+
+// ── CALCULATE ───────────────────────────────────────────────────────────────
+function calculate() {
+  const staffWage    = parseFloat(document.getElementById('staffWage').value)    || 0;
+  const benefitsRate = parseFloat(document.getElementById('benefitsRate').value) / 100 || 0.30;
+  const agencyRate   = parseFloat(document.getElementById('agencyRate').value)   || 0;
+  const stipend      = parseFloat(document.getElementById('stipend').value)      || 0;
+  const onboardHrs   = parseFloat(document.getElementById('onboardHours').value) || 12;
+  const prodGap      = parseFloat(document.getElementById('prodGap').value)      / 100 || 0.20;
+  const agencyFTEs   = parseFloat(document.getElementById('agencyFTEs').value)   || 0;
+  const agencyHours  = parseFloat(document.getElementById('agencyHours').value)  || 0;
+
+  const annualHours = 2080;
+  const contractHours = 13 * 40; // 13-week contract
+
+  // Staff RN fully loaded
+  const staffLoaded = staffWage * (1 + benefitsRate);
+
+  // Agency RN fully loaded
+  const stipendProrated = (stipend * 3) / contractHours; // 3 months per 13-wk contract
+  const onboardProrated = (onboardHrs * staffWage) / contractHours;
+  const prodAdjustment  = agencyRate * prodGap * (4 / 13); // 4 weeks of 13-week contract
+  const agencyLoaded    = agencyRate + stipendProrated + onboardProrated + prodAdjustment;
+
+  // Multiplier
+  const mult = agencyLoaded / (staffLoaded || 1);
+
+  // Annual premium
+  const costDiffPerHour = agencyLoaded - staffLoaded;
+  const annualPremium   = costDiffPerHour * agencyHours;
+
+  // Break-even: monthly retention investment
+  const monthlyPremium = annualPremium / 12;
+
+  // Store for PDF
+  lastResults = {
+    staffWage, benefitsRate: benefitsRate*100, agencyRate, stipend,
+    onboardHrs, prodGap: prodGap*100, agencyFTEs, agencyHours,
+    staffLoaded, agencyLoaded, mult, annualPremium, monthlyPremium, costDiffPerHour
+  };
+
+  // Update UI
+  document.getElementById('staffLoaded').textContent  = fmtHr(staffLoaded);
+  document.getElementById('agencyLoaded').textContent = fmtHr(agencyLoaded);
+  document.getElementById('multiplier').textContent   = mult.toFixed(1) + 'x';
+  document.getElementById('annualPremium').textContent = fmt(annualPremium);
+  document.getElementById('breakEven').textContent    = fmt(monthlyPremium) + '/mo';
+
+  // Insight
+  let insight = '';
+  if (agencyHours === 0) {
+    insight = 'Enter your agency RN hours to see your annual cost premium and break-even point.';
+  } else {
+    insight = `Your agency RNs are costing <strong>${fmtHr(agencyLoaded)}</strong> per productive hour versus <strong>${fmtHr(staffLoaded)}</strong> for an employed RN — a <strong>${mult.toFixed(1)}x</strong> multiple. `;
+    if (annualPremium > 1000000) {
+      insight += `At <strong>${fmt(annualPremium)}</strong> in annual agency premium, you are spending over $1M more than you would with a fully employed model. `;
+    } else if (annualPremium > 500000) {
+      insight += `The <strong>${fmt(annualPremium)}</strong> annual agency premium represents significant recoverable margin. `;
+    } else {
+      insight += `The <strong>${fmt(annualPremium)}</strong> annual agency premium may appear manageable — but it compounds with turnover cost and staff morale impact. `;
+    }
+    insight += `Any retention investment under <strong>${fmt(monthlyPremium)}/month</strong> pays for itself before it reduces your agency dependency at all. The math is almost always decisive. The question is whether it's visible in your budget.`;
+  }
+  document.getElementById('insightText').innerHTML = insight;
+}
+
+// ── MODAL ───────────────────────────────────────────────────────────────────
+function openModal() {
+  document.getElementById('modalOverlay').classList.add('active');
+  document.getElementById('modalEmail').focus();
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('active');
+  document.getElementById('modalForm').style.display = 'block';
+  document.getElementById('modalSuccess').style.display = 'none';
+  document.getElementById('modalEmail').value = '';
+  document.getElementById('modalSubmitBtn').disabled = false;
+  document.getElementById('modalSubmitBtn').textContent = 'Send Me the PDF';
+}
+
+async function submitEmail() {
+  const email = document.getElementById('modalEmail').value.trim();
+  if (!email || !email.includes('@')) {
+    document.getElementById('modalEmail').style.borderColor = '#e74c3c';
+    return;
+  }
+  document.getElementById('modalSubmitBtn').disabled = true;
+  document.getElementById('modalSubmitBtn').textContent = 'Sending...';
+
+  // Subscribe to Beehiiv
+  try {
+    await fetch('https://api.beehiiv.com/v2/publications/pub_a10a2657-e4b6-4743-903e-ee2e2661a27a/subscriptions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: email,
+        reactivate_existing: true,
+        send_welcome_email: true,
+        utm_source: 'agency-rn-calculator',
+        utm_medium: 'website',
+        utm_campaign: 'rn-cost-calculator'
+      })
+    });
+  } catch(e) { console.log('Beehiiv error:', e); }
+
+  // Generate and download PDF
+  generatePDF(email);
+
+  // Show success
+  document.getElementById('modalForm').style.display = 'none';
+  document.getElementById('modalSuccess').style.display = 'block';
+}
+
+// ── PDF GENERATION ───────────────────────────────────────────────────────────
+function generatePDF(email) {
+  const r = lastResults;
+  const now = new Date().toLocaleDateString('en-US', {year:'numeric', month:'long', day:'numeric'});
+
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 700px; margin: 40px auto; color: #1a1a1a; font-size: 13px; }
+    .header { background: #1a3b66; color: white; padding: 24px 28px; margin-bottom: 24px; }
+    .header h1 { font-size: 20px; margin-bottom: 4px; }
+    .header p { font-size: 11px; color: #c9a84c; letter-spacing: 1px; text-transform: uppercase; }
+    .section { margin-bottom: 20px; }
+    .section-title { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #c9a84c; border-bottom: 1px solid #c9a84c; padding-bottom: 4px; margin-bottom: 12px; }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    th { text-align: left; padding: 7px 10px; font-size: 10px; background: #f5f7f9; color: #666; text-transform: uppercase; letter-spacing: 1px; }
+    td { padding: 8px 10px; border-bottom: 1px solid #eeeeee; }
+    .highlight { font-weight: bold; color: #e74c3c; }
+    .good { font-weight: bold; color: #1a5276; }
+    .green { font-weight: bold; color: #27ae60; }
+    .result-box { display: inline-block; padding: 12px 20px; margin: 6px; background: #f5f7f9; border-left: 3px solid #1a5276; }
+    .result-box.red { border-left-color: #e74c3c; }
+    .result-box.green-b { border-left-color: #27ae60; }
+    .result-num { font-size: 22px; font-weight: bold; }
+    .result-lbl { font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+    .note { background: #fdf8ee; border-left: 3px solid #c9a84c; padding: 12px 16px; font-size: 11px; color: #555; line-height: 1.6; margin-top: 16px; }
+    .footer { margin-top: 32px; padding-top: 12px; border-top: 1px solid #eee; font-size: 10px; color: #aaa; display: flex; justify-content: space-between; }
+  </style></head><body>
+  <div class="header">
+    <h1>Agency RN Cost Analysis</h1>
+    <p>Inflection Health Partners · ${now}</p>
+  </div>
+  <div class="section">
+    <div class="section-title">Your Inputs</div>
+    <table>
+      <tr><th>Input</th><th>Your Value</th><th>Document Default</th></tr>
+      <tr><td>Staff RN hourly wage</td><td class="good">$${r.staffWage}/hr</td><td>$38–42/hr</td></tr>
+      <tr><td>Benefits & payroll tax rate</td><td class="good">${r.benefitsRate}%</td><td>30%</td></tr>
+      <tr><td>Agency bill rate</td><td class="highlight">$${r.agencyRate}/hr</td><td>$65–85/hr</td></tr>
+      <tr><td>Monthly housing stipend (per RN)</td><td>$${r.stipend.toLocaleString()}</td><td>$1,500–2,500</td></tr>
+      <tr><td>Onboarding hours per contract</td><td>${r.onboardHrs} hrs</td><td>12 hrs</td></tr>
+      <tr><td>Productivity gap (weeks 1–4)</td><td>${r.prodGap}%</td><td>20%</td></tr>
+      <tr><td>Agency RN FTEs</td><td>${r.agencyFTEs}</td><td>—</td></tr>
+      <tr><td>Total agency hours (last 12 mo)</td><td>${r.agencyHours.toLocaleString()}</td><td>—</td></tr>
+    </table>
+  </div>
+  <div class="section">
+    <div class="section-title">Your Results</div>
+    <div style="margin-bottom:16px;">
+      <div class="result-box"><div class="result-num good">$${r.staffLoaded.toFixed(0)}/hr</div><div class="result-lbl">Staff RN fully loaded</div></div>
+      <div class="result-box red"><div class="result-num highlight">$${r.agencyLoaded.toFixed(0)}/hr</div><div class="result-lbl">Agency RN fully loaded</div></div>
+      <div class="result-box green-b"><div class="result-num green">${r.mult.toFixed(1)}x</div><div class="result-lbl">Cost multiplier</div></div>
+    </div>
+    <table>
+      <tr><th>Metric</th><th>Your Number</th><th>What It Means</th></tr>
+      <tr><td>Cost differential per hour</td><td class="highlight">$${r.costDiffPerHour.toFixed(0)}/hr more for agency</td><td>Per productive hour above staff cost</td></tr>
+      <tr><td>Annual agency cost premium</td><td class="highlight">$${Math.round(r.annualPremium).toLocaleString()}</td><td>Additional annual spend vs. employed model</td></tr>
+      <tr><td>Break-even retention investment</td><td class="green">$${Math.round(r.monthlyPremium).toLocaleString()}/month</td><td>Monthly retention spend that pays for itself</td></tr>
+    </table>
+  </div>
+  <div class="note">
+    <strong>Note:</strong> These figures are modeled estimates based on your inputs and illustrative assumptions (onboarding hours, productivity gap). Actual costs vary by market, specialty, and contract structure. Use this analysis as a starting point for discussion with your finance and HR teams.
+  </div>
+  <div class="footer">
+    <span>Inflection Health Partners · inflectionhealthpartners.com · jonathan@inflectionhealthpartners.com</span>
+    <span>Generated ${now} for ${email}</span>
+  </div>
+  </body></html>`;
+
+  const blob = new Blob([html], {type: 'text/html'});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = 'Agency_RN_Cost_Analysis_IHP.html';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// Modal close on overlay click
+document.getElementById('modalOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// Initialize
+calculate();
+</script>
+</body>
+</html>
