@@ -356,8 +356,9 @@ function calculate() {
   lastResults = {
     staffWage, benefitsRate: benefitsRate*100, agencyRate, stipend,
     onboardHrs, prodGap: prodGap*100, agencyFTEs, agencyHours,
-    staffLoaded, agencyLoaded, mult, annualPremium, monthlyPremium, costDiffPerHour
-  };
+    staffLoaded, agencyLoaded, mult, annualPremium, monthlyPremium, costDiffPerHour,
+    stipendProrated, onboardProrated, prodAdjustment
+};
  
   // Update UI
   document.getElementById('staffLoaded').textContent  = fmtHr(staffLoaded);
@@ -504,9 +505,12 @@ function generatePDF(email) {
   tableRow('Staff RN hourly wage',                '$'+r.staffWage+'/hr',         'BLS OEWS 2024', true);
   tableRow('Benefits & payroll tax rate',          r.benefitsRate+'%',            'Applied to base wage', false);
   tableRow('Agency bill rate',                     '$'+r.agencyRate+'/hr',        'What facility pays agency', true);
-  tableRow('Monthly housing stipend (per RN)',     '$'+r.stipend.toLocaleString(),'Funded within bill rate', false);
-  tableRow('Onboarding hours per contract',        r.onboardHrs+' hrs',           'Illustrative estimate', true);
-  tableRow('Productivity gap (weeks 1–4)',          r.prodGap+'%',                 'Illustrative estimate', false);
+  tableRow('Monthly housing stipend (per RN)',  '$'+r.stipend.toLocaleString(), 'Funded within bill rate', false);
+  tableRow('Housing stipend (prorated/hr)',      '$'+r.stipendProrated.toFixed(2)+'/hr', 'Stipend x 3 mo / contract hrs', true);
+  tableRow('Onboarding hours per contract',     r.onboardHrs+' hrs',            'Illustrative estimate', false);
+  tableRow('Onboarding cost (prorated/hr)',      '$'+r.onboardProrated.toFixed(2)+'/hr', 'Onboard hrs x staff wage / contract hrs', true);
+  tableRow('Productivity gap (weeks 1–4)',       r.prodGap+'%',                  'Illustrative estimate', false);
+  tableRow('Productivity adjustment (per hr)',   '$'+r.prodAdjustment.toFixed(2)+'/hr', 'Bill rate x gap x (4/13 wks)', true);
   tableRow('Agency RN FTEs',                       String(r.agencyFTEs),          '', true);
   tableRow('Total agency hours (last 12 mo)',      r.agencyHours.toLocaleString(),'From your staffing system', false);
  
