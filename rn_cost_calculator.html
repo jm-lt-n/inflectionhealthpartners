@@ -314,7 +314,7 @@ function updateSliderPct(id, displayId) {
 }
  
 function fmt(n) { return '$' + Math.round(n).toLocaleString(); }
-function fmtHr(n) { return '$' + n.toFixed(0) + '/hr'; }
+function fmtHr(n) { return '$' + n.toFixed(2) + '/hr'; }
  
 // ── STORED RESULTS FOR PDF ──────────────────────────────────────────────────
 let lastResults = {};
@@ -519,12 +519,12 @@ function generatePDF(email) {
   // Section 2: Results boxes
   sectionTitle('Your Results');
   y += 4;
-  resultBox('Staff RN\nfully loaded/hr', '$'+r.staffLoaded.toFixed(0)+'/hr', 'blue');
-  resultBox('Agency RN\nfully loaded/hr', '$'+r.agencyLoaded.toFixed(0)+'/hr', 'red');
+  resultBox('Staff RN\nfully loaded/hr', '$'+r.staffLoaded.toFixed(2)+'/hr', 'blue');
+  resultBox('Agency RN\nfully loaded/hr', '$'+r.agencyLoaded.toFixed(2)+'/hr', 'red');
   resultBox('Cost\nmultiplier', r.mult.toFixed(1)+'x', 'green');
   y += 64;
  
-  tableRow('Cost differential per hour',          '$'+r.costDiffPerHour.toFixed(0)+'/hr more for agency', '', true);
+  tableRow('Cost differential per hour',          '$'+r.costDiffPerHour.toFixed(2)+'/hr more for agency', '', true);
   tableRow('Annual agency cost premium',           '$'+Math.round(r.annualPremium).toLocaleString(),        '', false);
   tableRow('Break-even retention investment',      '$'+Math.round(r.monthlyPremium).toLocaleString()+'/mo', 'Monthly spend that pays for itself', true);
  
