@@ -402,8 +402,11 @@ async function submitEmail() {
   // Subscribe to Beehiiv
   try {
     await fetch('https://api.beehiiv.com/v2/publications/pub_a10a2657-e4b6-4743-903e-ee2e2661a27a/subscriptions', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+  method: 'POST',
+  headers: { 
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer FtA0hObHkpmr4VuL6QJpnyflfdIEr9u11KxIdqACJ81QKp2N5J5olcE93fd1bTWs'
+  },
       body: JSON.stringify({
         email: email,
         reactivate_existing: true,
