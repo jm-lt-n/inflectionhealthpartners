@@ -9,7 +9,7 @@ exports.handler = async (event) => {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer YOUR_API_KEY_HERE'
+      'Authorization': `Bearer ${process.env.BEEHIIV_API_KEY}`
     },
     body: JSON.stringify({
       email,
