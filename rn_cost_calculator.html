@@ -411,21 +411,11 @@ async function submitEmail() {
  
   // Subscribe to Beehiiv
   try {
-    await fetch('https://api.beehiiv.com/v2/publications/pub_a10a2657-e4b6-4743-903e-ee2e2661a27a/subscriptions', {
+    await fetch('/.netlify/functions/subscribe', {
   method: 'POST',
-  headers: { 
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer mw7JZnEDIJwGcJtsvhXLaNyAmQViWSc9HtKxmBAF1ajQGUa3H5XQAus7xNE2VFzD'
-  },
-      body: JSON.stringify({
-        email: email,
-        reactivate_existing: true,
-        send_welcome_email: true,
-        utm_source: 'agency-rn-calculator',
-        utm_medium: 'website',
-        utm_campaign: 'rn-cost-calculator'
-      })
-    });
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ email: email })
+});
   } catch(e) { console.log('Beehiiv error:', e); }
  
   // Generate and download PDF
