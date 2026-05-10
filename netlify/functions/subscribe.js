@@ -22,6 +22,9 @@ exports.handler = async (event) => {
   });
 
   const data = await response.json();
+  console.log('Beehiiv status:', response.status);
+  console.log('Beehiiv response:', JSON.stringify(data));
+  
   return {
     statusCode: response.status,
     body: JSON.stringify(data)
