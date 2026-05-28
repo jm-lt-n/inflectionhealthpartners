@@ -1,0 +1,200 @@
+// payer-subscribe.js — Netlify serverless function
+// Handles two actions:
+//   action: "subscribe"  — adds email to Beehiiv
+//   action: "pdf"        — generates HTML summary for download
+//
+// ENVIRONMENT VARIABLES REQUIRED (Netlify dashboard → Site settings → Environment variables):
+//   BEEHIIV_API_KEY  — your Beehiiv API key
+//
+const BEEHIIV_PUB_ID = 'pub_a10a2657-e4b6-4743-903e-ee2e2661a27a';
+const ALLOWED_ORIGIN = 'https://inflectionhealthpartners.com';
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': ALLOWED_ORIGIN,
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type',
+};
+
+exports.handler = async function(event) {
+  if (event.httpMethod === 'OPTIONS') {
+    return { statusCode: 204, headers: corsHeaders, body: '' };
+  }
+  if (event.httpMethod !== 'POST') {
+    return { statusCode: 405, headers: { ...corsHeaders, 'Content-Type': 'application/json' }, body: JSON.stringify({ error: 'Method not allowed' }) };
+  }
+
+  let body;
+  try { body = JSON.parse(event.body); }
+  catch(e) { return { statusCode: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' }, body: JSON.stringify({ error: 'Invalid JSON' }) }; }
+
+  const { action } = body;
+
+  // ── SUBSCRIBE ──────────────────────────────────────────────────────────────
+  if (action === 'subscribe') {
+    const { email } = body;
+    if (!email || !email.includes('@')) {
+      return { statusCode: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' }, body: JSON.stringify({ error: 'Valid email required' }) };
+    }
+    const apiKey = process.env.BEEHIIV_API_KEY;
+    if (!apiKey) {
+      return { statusCode: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' }, body: JSON.stringify({ error: 'Server configuration error' }) };
+    }
+    try {
+      const res = await fetch(`https://api.beehiiv.com/v2/publications/${BEEHIIV_PUB_ID}/subscriptions`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+        body: JSON.stringify({
+          email,
+          reactivate_existing: true,
+          send_welcome_email: true,
+          utm_source: 'payer-contract-modeler',
+          utm_medium: 'operator-tools',
+          utm_campaign: 'payer-modeler-pdf'
+        })
+      });
+      if (!res.ok) {
+        const err = await res.text();
+        console.error('Beehiiv error:', err);
+        return { statusCode: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' }, body: JSON.stringify({ error: 'Subscription failed' }) };
+      }
+      return { statusCode: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' }, body: JSON.stringify({ success: true }) };
+    } catch(e) {
+      console.error('Subscribe error:', e);
+      return { statusCode: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' }, body: JSON.stringify({ error: 'Internal error' }) };
+    }
+  }
+
+  // ── PDF (HTML download) ────────────────────────────────────────────────────
+  if (action === 'pdf') {
+    const { rows, summary, scenario, assumptions } = body;
+    if (!rows || !summary) {
+      return { statusCode: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' }, body: JSON.stringify({ error: 'Missing model data' }) };
+    }
+
+    const fmt = n => '$' + Math.round(n).toLocaleString('en-US');
+    const now = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+    const priorityColor = p => {
+      if (p.includes('Renegotiate')) return '#a32d2d';
+      if (p.includes('High'))        return '#3b6d11';
+      if (p.includes('Monitor'))     return '#854f0b';
+      return '#5f5e5a';
+    };
+
+    const rowsHTML = rows.map(r => `
+      <tr>
+        <td style="font-weight:500;padding:10px 12px;border-bottom:1px solid #eeece6">${r.name}</td>
+        <td style="padding:10px 12px;border-bottom:1px solid #eeece6;color:#888;font-size:11px">${r.basis}</td>
+        <td style="padding:10px 12px;border-bottom:1px solid #eeece6">${fmt(r.curPV)}</td>
+        <td style="padding:10px 12px;border-bottom:1px solid #eeece6">${fmt(r.propPV)}</td>
+        <td style="padding:10px 12px;border-bottom:1px solid #eeece6;color:${r.impact >= 0 ? '#3b6d11' : '#a32d2d'};font-weight:500">${r.impact >= 0 ? '+' : ''}${fmt(r.impact)}</td>
+        <td style="padding:10px 12px;border-bottom:1px solid #eeece6;color:#a32d2d">${fmt(r.ddContract)}</td>
+        <td style="padding:10px 12px;border-bottom:1px solid #eeece6;color:#a32d2d">${fmt(r.ddRCM)}</td>
+        <td style="padding:10px 12px;border-bottom:1px solid #eeece6;color:#a32d2d">${fmt(r.oExp)}</td>
+        <td style="padding:10px 12px;border-bottom:1px solid #eeece6;font-weight:500;font-size:11px;color:${priorityColor(r.priority)}">${r.priority}</td>
+      </tr>`).join('');
+
+    const html = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Payer Contract Analysis — Inflection Health Partners</title>
+<style>
+  @media print { body { margin: 0; } }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #1a1a18; margin: 0; padding: 40px; font-size: 13px; background: #fff; }
+  .header { border-bottom: 2px solid #1a3b66; padding-bottom: 20px; margin-bottom: 28px; display: flex; justify-content: space-between; align-items: flex-end; }
+  .brand { font-size: 20px; font-weight: 600; color: #1a3b66; letter-spacing: -0.3px; }
+  .brand span { color: #c9a84c; }
+  .meta { font-size: 11px; color: #888; text-align: right; line-height: 1.6; }
+  .section-label { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #888; margin: 0 0 12px; }
+  .summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 32px; }
+  .summary-card { background: #f5f5f3; border-radius: 8px; padding: 14px 16px; }
+  .summary-label { font-size: 11px; color: #5f5e5a; margin-bottom: 4px; }
+  .summary-value { font-size: 19px; font-weight: 500; }
+  .summary-sub { font-size: 10px; color: #888; margin-top: 2px; }
+  .pos { color: #3b6d11; }
+  .neg { color: #a32d2d; }
+  table { width: 100%; border-collapse: collapse; margin-bottom: 28px; font-size: 12px; }
+  th { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #888; text-align: left; padding: 8px 12px 12px; border-bottom: 2px solid #eeece6; white-space: nowrap; }
+  .assumptions { background: #f5f5f3; border-radius: 8px; padding: 14px 18px; margin-bottom: 24px; line-height: 1.7; }
+  .assumptions p { margin: 3px 0; font-size: 12px; color: #5f5e5a; }
+  .disclaimer { border-left: 3px solid #c9a84c; padding: 12px 16px; background: #faeeda; border-radius: 0 6px 6px 0; margin-bottom: 28px; font-size: 11px; color: #854f0b; line-height: 1.6; }
+  .footer { border-top: 1px solid #eeece6; padding-top: 16px; display: flex; justify-content: space-between; font-size: 10px; color: #888; }
+  .print-btn { display: inline-block; margin-bottom: 20px; padding: 8px 20px; background: #1a3b66; color: #fff; border: none; border-radius: 6px; font-size: 12px; cursor: pointer; font-family: inherit; }
+  @media print { .print-btn { display: none; } }
+</style>
+</head>
+<body>
+  <button class="print-btn" onclick="window.print()">Print / Save as PDF</button>
+
+  <div class="header">
+    <div class="brand">Inflection<span>.</span>Health Partners</div>
+    <div class="meta">Payer Contract Scenario Modeler<br>Generated ${now}<br>Scenario: ${scenario || 'Base case'}</div>
+  </div>
+
+  <div class="section-label">Portfolio Summary</div>
+  <div class="summary-grid">
+    <div class="summary-card">
+      <div class="summary-label">Current PV Revenue</div>
+      <div class="summary-value">${fmt(summary.curPV)}</div>
+      <div class="summary-sub">modeled portfolio, timing-adjusted</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-label">Proposed PV Revenue</div>
+      <div class="summary-value">${fmt(summary.propPV)}</div>
+      <div class="summary-sub">at proposed / target rates</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-label">Net PV Impact</div>
+      <div class="summary-value ${summary.impact >= 0 ? 'pos' : 'neg'}">${summary.impact >= 0 ? '+' : ''}${fmt(summary.impact)}</div>
+      <div class="summary-sub">present-value basis</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-label">Modeled Outlier Exposure</div>
+      <div class="summary-value neg">${fmt(summary.oExp)}</div>
+      <div class="summary-sub">provider share above threshold</div>
+    </div>
+  </div>
+
+  <div class="section-label">Payer Analysis — Modeled Economic Value</div>
+  <table>
+    <thead>
+      <tr>
+        <th>Payer</th><th>Basis</th><th>Current PV</th><th>Proposed PV</th>
+        <th>Net Impact</th><th>Contract Denial Drag</th><th>RCM Denial Drag</th>
+        <th>Outlier Exp.</th><th>Contracting Priority</th>
+      </tr>
+    </thead>
+    <tbody>${rowsHTML}</tbody>
+  </table>
+
+  <div class="section-label">Starting Assumptions</div>
+  <div class="assumptions">
+    <p><strong>Discount rate:</strong> ${assumptions.disc}% annual &nbsp;·&nbsp; <strong>LOS:</strong> ${assumptions.los} days &nbsp;·&nbsp; <strong>Outlier threshold:</strong> $${Number(assumptions.thresh).toLocaleString()} &nbsp;·&nbsp; <strong>Outlier cases per 100:</strong> ${assumptions.orate}</p>
+    <p><strong>Avg total outlier case cost:</strong> $${Number(assumptions.excess).toLocaleString()} &nbsp;·&nbsp; <strong>Reimbursed excess-cost share:</strong> ${assumptions.oshare}% &nbsp;·&nbsp; <strong>Contract denial overturn:</strong> ${assumptions.ovtContract}% &nbsp;·&nbsp; <strong>RCM denial overturn:</strong> ${assumptions.ovtRCM}%</p>
+  </div>
+
+  <div class="disclaimer">
+    <strong>Strategic contract-prioritization prototype — not a contract valuation engine.</strong> Results are modeling approximations to support negotiation preparation and payer prioritization. DRG rows use a flat per-admission approximation; true DRG analysis requires case-mix index, MS-DRG weights, and hospital-specific cost-to-charge ratios. Denial drag reflects modeled assumptions, not audited claims data. Do not use for board-level financial forecasting or contract execution without independent verification.
+  </div>
+
+  <div class="footer">
+    <div>Inflection Health Partners · inflectionhealthpartners.com</div>
+    <div>Payer Contract Scenario Modeler · For analytical use only</div>
+  </div>
+</body>
+</html>`;
+
+    return {
+      statusCode: 200,
+      headers: {
+        ...corsHeaders,
+        'Content-Type': 'text/html',
+        'Content-Disposition': 'attachment; filename="payer-contract-analysis.html"'
+      },
+      body: html
+    };
+  }
+
+  return { statusCode: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' }, body: JSON.stringify({ error: 'Unknown action' }) };
+};
