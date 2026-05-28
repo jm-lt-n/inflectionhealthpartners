@@ -133,7 +133,7 @@ input:focus,select:focus{border-color:#378add;box-shadow:0 0 0 2px rgba(55,138,2
   </div>
   <button class="ab" onclick="addPayer()">+ Add payer</button>
   <div class="callout">Click the <strong>&#8964;</strong> chevron on any row to expand contract detail and override individual terms. Overridden fields turn <strong>blue</strong>.</div>
-  <div class="note" style="margin-top:8px">Rate = $/day for per diem; $/admission for DRG (approximate — true DRG modeling requires CMI and MS-DRG weights). Medicare (IPPS) is paid per admission via the Inpatient Prospective Payment System. DRG-based, administratively set by CMS, included as benchmark. Medicaid State Plan reimbursement methodology varies by state. Per diem shown here reflects common behavioral health and long-term care structures; acute care Medicaid may use APR-DRG or other state-specific methodologies. Target / proposed rate represents a modeling assumption for administratively set payers.</div>
+  <div class="note" style="margin-top:8px">Rate = $/day for per diem; $/admission for DRG (approximate — true DRG modeling requires CMI and MS-DRG weights). Medicare (IPPS) is paid per admission via the Inpatient Prospective Payment System: DRG-based, administratively set by CMS, included as benchmark. Medicaid State Plan reimbursement methodology varies by state. Per diem shown here reflects common behavioral health and long-term care structures; acute care Medicaid may use APR-DRG or other state-specific methodologies. Target / proposed rate represents a modeling assumption for administratively set payers.</div>
 </div>
 
 <hr class="divider">
@@ -150,7 +150,7 @@ input:focus,select:focus{border-color:#378add;box-shadow:0 0 0 2px rgba(55,138,2
 <div class="g4" style="margin-bottom:16px" id="sumcards"></div>
 
 <div class="card">
-  <div class="sl">Payer analysis — modeled economic value</div>
+  <div class="sl">Payer analysis - modeled economic value</div>
   <div style="overflow-x:auto">
     <table class="tbl rtbl">
       <thead><tr>
@@ -168,9 +168,9 @@ input:focus,select:focus{border-color:#378add;box-shadow:0 0 0 2px rgba(55,138,2
     </table>
   </div>
   <div class="note">
-    Present value (PV) = net revenue × 1/(1 + daily discount rate × days-to-pay). Simple time-value proxy. NOT a full cash-flow model.<br>
-    Contract denial drag (current) = unrecovered revenue from payer-behavioral denials under current contract terms: auth requirements, contract term disputes, level-of-care challenges. Reflects current-period leakage -- not modeled under proposed terms. Negotiable at the contract table.<br>
-    RCM denial drag (current) = unrecovered revenue from internal execution failures: documentation gaps, coding errors, timely filing. Current-period leakage. Operational fix, not a contract fix. HFMA benchmarks: 5–10% avg denial rate; &lt;5% optimal; 85% resolution within 30 days as target.<br>
+    Present value (PV) = net revenue × 1/(1 + daily discount rate × days-to-pay). Simple time-value proxy -- not a full cash-flow model.<br>
+    Contract denial drag (current) = unrecovered revenue from payer-behavioral denials under current contract terms: auth requirements, contract term disputes, level-of-care challenges. Reflects current-period leakage. Not modeled under proposed terms. Negotiable at the contract table.<br>
+    RCM denial drag (current) = unrecovered revenue from internal execution failures: documentation gaps, coding errors, timely filing. Current-period leakage: operational fix, not a contract fix. HFMA benchmarks: 5–10% avg denial rate; &lt;5% optimal; 85% resolution within 30 days as target.<br>
     Note: contract and RCM denials are modeled as additive and independent. In practice some denial categories overlap or interact operationally.<br>
     Modeled outlier exposure = vol × outlier rate × max(0, avg total case cost − threshold) × provider share. Approximation only -- Medicare uses fixed-loss thresholds, CCRs, and marginal payment factors.<br>
     Contracting priority = weighted score combining dollar impact magnitude, contract denial burden, payment timing, and outlier exposure. Higher dollar impact carries more weight. Not a final contracting algorithm.
@@ -197,7 +197,7 @@ input:focus,select:focus{border-color:#378add;box-shadow:0 0 0 2px rgba(55,138,2
 </div>
 
 
-<p class="footer">Inflection Health Partners &nbsp;·&nbsp; Payer Contract Scenario Modeler v10 &nbsp;·&nbsp; Strategic contract-prioritization prototype -- not a contract valuation engine</p>
+<p class="footer">Inflection Health Partners &nbsp;·&nbsp; Payer Contract Scenario Modeler v10 &nbsp;·&nbsp; Strategic contract-prioritization prototype. Not a contract valuation engine</p>
 </div>
 
 <script>
@@ -395,7 +395,7 @@ function calc(){
     tProp += propPV;
     // dd tracked per-row; no global accumulator needed
     tOE   += oExp;
-    rows.push({p,curPV,propPV,impact,dd,ddContract,ddRCM,oExp});
+    rows.push({p,curPV,propPV,impact,ddContract,ddRCM,oExp});
   });
 
   const tot=tProp-tCur;
