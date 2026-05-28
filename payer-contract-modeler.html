@@ -85,21 +85,6 @@ input:focus,select:focus{border-color:#378add;box-shadow:0 0 0 2px rgba(55,138,2
 .uc-badge{font-size:10px;font-weight:500;background:var(--bg2);color:var(--tx3);padding:2px 8px;border-radius:3px;border:.5px solid var(--bd2);margin-left:8px;vertical-align:middle}
 .callout{font-size:12px;font-weight:500;color:var(--tx-info);background:var(--bg-info);border-radius:var(--r8);padding:8px 14px;margin-top:12px;border:.5px solid #378add33}
 .footer{font-size:11px;color:var(--tx3);text-align:center;margin-top:1.5rem}
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:1000;align-items:center;justify-content:center}
-.modal-overlay.open{display:flex}
-.modal{background:var(--bg);border-radius:var(--r12);padding:2rem;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,0.3)}
-.modal h3{font-size:17px;font-weight:500;color:var(--tx);margin:0 0 8px}
-.modal p{font-size:13px;color:var(--tx2);margin:0 0 20px;line-height:1.6}
-.modal input{width:100%;box-sizing:border-box;margin-bottom:12px;font-size:14px;padding:10px 12px}
-.modal-btns{display:flex;gap:8px}
-.modal-submit{flex:1;padding:10px;background:#1a3b66;color:#fff;border:none;border-radius:var(--r8);font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;transition:background .15s}
-.modal-submit:hover{background:#0f2444}
-.modal-submit:disabled{background:#888;cursor:not-allowed}
-.modal-cancel{padding:10px 16px;background:none;border:.5px solid var(--bd2);border-radius:var(--r8);font-size:13px;color:var(--tx2);cursor:pointer;font-family:inherit}
-.modal-cancel:hover{background:var(--bg2)}
-.modal-error{font-size:12px;color:var(--tx-danger);margin-top:4px;display:none}
-.pdf-btn{margin-top:12px;width:100%;padding:11px;background:#1a3b66;color:#fff;border:none;border-radius:var(--r8);font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;transition:background .15s}
-.pdf-btn:hover{background:#0f2444}
 </style>
 </head>
 <body>
@@ -196,7 +181,6 @@ input:focus,select:focus{border-color:#378add;box-shadow:0 0 0 2px rgba(55,138,2
   <div id="wfall"></div>
 </div>
 
-<button class="pdf-btn" onclick="openModal()">&#8681; Download PDF summary of results</button>
 
 <div class="uc-card">
   <div class="sl">Uncompensated care reference <span class="uc-badge">not a negotiated contract</span></div>
@@ -212,19 +196,6 @@ input:focus,select:focus{border-color:#378add;box-shadow:0 0 0 2px rgba(55,138,2
 </div>
 
 
-<!-- Email modal -->
-<div class="modal-overlay" id="emailModal">
-  <div class="modal">
-    <h3>Get your PDF summary</h3>
-    <p>Enter your email and we'll send you the results plus free operator tools from Inflection Health Partners. No spam.</p>
-    <input type="email" id="modalEmail" placeholder="your@email.com" onkeydown="if(event.key==='Enter')submitModal()">
-    <div class="modal-error" id="modalError"></div>
-    <div class="modal-btns">
-      <button class="modal-submit" id="modalSubmit" onclick="submitModal()">Download PDF</button>
-      <button class="modal-cancel" onclick="closeModal()">Cancel</button>
-    </div>
-  </div>
-</div>
 <p class="footer">Inflection Health Partners &nbsp;·&nbsp; Payer Contract Scenario Modeler v10 &nbsp;·&nbsp; Strategic contract-prioritization prototype — not a contract valuation engine</p>
 </div>
 
@@ -492,134 +463,6 @@ function calc(){
 renderPayers();
 calc();
 
-function openModal(){
-  document.getElementById('emailModal').classList.add('open');
-  setTimeout(()=>document.getElementById('modalEmail').focus(),100);
-}
-
-function closeModal(){
-  document.getElementById('emailModal').classList.remove('open');
-  document.getElementById('modalError').style.display='none';
-  document.getElementById('modalEmail').value='';
-  document.getElementById('modalSubmit').disabled=false;
-  document.getElementById('modalSubmit').textContent='Download PDF';
-}
-
-async function submitModal(){
-  const email=document.getElementById('modalEmail').value.trim();
-  const errEl=document.getElementById('modalError');
-  const btn=document.getElementById('modalSubmit');
-  errEl.style.display='none';
-  if(!email||!email.includes('@')){
-    errEl.textContent='Please enter a valid email address.';
-    errEl.style.display='block';
-    return;
-  }
-  btn.disabled=true;
-  btn.textContent='Sending...';
-
-  // Collect current model state for PDF
-  const sc_label = document.querySelector('.sbtn.on')?.textContent||'Base case';
-  const rows_data = [];
-  payers.forEach(p=>{
-    const los   = p.los    !=null?p.los    :+document.getElementById('g-los').value||4;
-    const thresh= p.thresh !=null?p.thresh :+document.getElementById('g-thresh').value||85000;
-    const oshare= (p.oshare!=null?p.oshare :(+document.getElementById('g-oshare').value||75))/100;
-    const orate = (p.orate !=null?p.orate  :(+document.getElementById('g-orate').value||3))/100;
-    const excess= p.excess !=null?p.excess :+document.getElementById('g-excess').value||140000;
-    const ovtC  = (p.ovtContract!=null?p.ovtContract:(+document.getElementById('g-ovtContract').value||45))/100;
-    const ovtR  = (p.ovtRCM    !=null?p.ovtRCM     :(+document.getElementById('g-ovtRCM').value||35))/100;
-    const disc  = +document.getElementById('g-disc').value||5;
-    const mult  = {base:1,optimistic:1.05,downside:.92}[sc]||1;
-    const vol   = p.vol*mult;
-    const unitC = p.type==='drg'?p.cur :p.cur *los;
-    const unitP = p.type==='drg'?p.prop:p.prop*los;
-    const gC    = Math.max(0,vol*(unitC-p.carveout));
-    const gP    = Math.max(0,vol*(unitP-p.carveout));
-    const dc    = ((p.dcontract||0)+(p.drcm||0))/100;
-    const dcC   = (p.dcontract||0)/100;
-    const dcR   = (p.drcm||0)/100;
-    const dLC   = gC*dc;
-    const dLP   = gP*dc;
-    const blended=(dcC*ovtC+dcR*ovtR)/Math.max(dc,0.001);
-    const nC    = gC-dLC+dLC*blended;
-    const nP    = gP-dLP+dLP*blended;
-    const pvF   = 1/(1+(disc/100/365)*p.dtp);
-    const curPV = nC*pvF;
-    const propPV= nP*pvF;
-    const ddC   = gC*dcC*(1-ovtC);
-    const ddR   = gC*dcR*(1-ovtR);
-    const oExp  = vol*orate*Math.max(0,excess-thresh)*(1-oshare);
-    const impact= propPV-curPV;
-    // priority label
-    const maxImpAbs=Math.max(...payers.map(pp=>Math.abs(propPV-curPV)),1);
-    const dW=Math.abs(impact)/maxImpAbs;
-    const score=(impact<0?3:0)+dW*2+((p.dcontract||0)>8?1:0)+(p.dtp>40?0.5:0)+(oExp/Math.max(1,oExp)>.25?0.5:0);
-    const priority=score>=3?'Renegotiate':score>=1.5?'High priority':p.prop>p.cur||score>=0.8?'Monitor':'Hold';
-    rows_data.push({
-      name:p.name,
-      basis:p.type==='drg'?'DRG approx':'Per diem',
-      curPV,propPV,impact,ddContract:ddC,ddRCM:ddR,oExp,priority
-    });
-  });
-  rows_data.sort((a,b)=>Math.abs(b.impact)-Math.abs(a.impact));
-
-  const summary={
-    curPV:rows_data.reduce((s,r)=>s+r.curPV,0),
-    propPV:rows_data.reduce((s,r)=>s+r.propPV,0),
-    impact:rows_data.reduce((s,r)=>s+r.impact,0),
-    oExp:rows_data.reduce((s,r)=>s+r.oExp,0)
-  };
-  summary.impact=summary.propPV-summary.curPV;
-
-  const assumptions={
-    disc:document.getElementById('g-disc').value,
-    los:document.getElementById('g-los').value,
-    thresh:document.getElementById('g-thresh').value,
-    orate:document.getElementById('g-orate').value,
-    excess:document.getElementById('g-excess').value,
-    oshare:document.getElementById('g-oshare').value,
-    ovtContract:document.getElementById('g-ovtContract').value,
-    ovtRCM:document.getElementById('g-ovtRCM').value
-  };
-
-  try {
-    // Subscribe to Beehiiv
-    const subRes = await fetch('/.netlify/functions/payer-subscribe', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({action:'subscribe',email})
-    });
-    if(!subRes.ok) console.warn('Subscription issue — continuing to PDF');
-
-    // Get PDF HTML
-    btn.textContent='Generating...';
-    const pdfRes = await fetch('/.netlify/functions/payer-subscribe', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({action:'pdf',rows:rows_data,summary,scenario:sc_label,assumptions})
-    });
-    if(!pdfRes.ok) throw new Error('PDF generation failed');
-
-    const pdfHtml = await pdfRes.text();
-    const blob = new Blob([pdfHtml],{type:'text/html'});
-    const url  = URL.createObjectURL(blob);
-    const a    = document.createElement('a');
-    a.href=url; a.download='payer-contract-analysis.html'; a.click();
-    URL.revokeObjectURL(url);
-    closeModal();
-  } catch(e) {
-    console.error(e);
-    errEl.textContent='Something went wrong. Please try again.';
-    errEl.style.display='block';
-    btn.disabled=false;
-    btn.textContent='Download PDF';
-  }
-}
-
-document.getElementById('emailModal').addEventListener('click',function(e){
-  if(e.target===this) closeModal();
-});
 </script>
 </body>
 </html>
