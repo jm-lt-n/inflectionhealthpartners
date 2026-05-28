@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payer Contract Scenario Modeler v10</title>
+
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#ffffff;--bg2:#f5f5f3;--bg3:#eeece6;
+  --bg-success:#eaf3de;--bg-warning:#faeeda;--bg-danger:#fcebeb;--bg-info:#e6f1fb;
+  --tx:#1a1a18;--tx2:#5f5e5a;--tx3:#888780;
+  --tx-success:#3b6d11;--tx-warning:#854f0b;--tx-danger:#a32d2d;--tx-info:#185fa5;
+  --bd:rgba(0,0,0,0.12);--bd2:rgba(0,0,0,0.22);
+  --r8:8px;--r12:12px;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#1e1e1c;--bg2:#2a2a28;--bg3:#333331;
+  --bg-success:#173404;--bg-warning:#412402;--bg-danger:#501313;--bg-info:#042c53;
+  --tx:#f0ede6;--tx2:#b4b2a9;--tx3:#888780;
+  --tx-success:#c0dd97;--tx-warning:#fac775;--tx-danger:#f09595;--tx-info:#85b7eb;
+  --bd:rgba(255,255,255,0.1);--bd2:rgba(255,255,255,0.2);
+}}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg3);color:var(--tx);font-size:14px;line-height:1.5;padding:2rem 1rem;min-height:100vh}
+.wrap{max-width:1180px;margin:0 auto}
+h1{font-size:20px;font-weight:500;color:var(--tx);margin-bottom:6px}
+.sub{font-size:13px;color:var(--tx2);margin-bottom:8px}
+.disclaimer{display:inline-block;font-size:11px;font-weight:500;background:var(--bg-warning);color:var(--tx-warning);border-radius:var(--r8);padding:4px 12px;margin-bottom:1.5rem}
+.card{background:var(--bg);border:.5px solid var(--bd);border-radius:var(--r12);padding:1rem 1.25rem;margin-bottom:12px}
+.sl{font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--tx3);margin-bottom:12px}
+.g4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.g5{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+.fld{display:flex;flex-direction:column;gap:4px}
+.fld label{font-size:12px;color:var(--tx2)}
+input[type=text],input[type=number],select{
+  background:var(--bg);color:var(--tx);border:.5px solid var(--bd2);
+  border-radius:var(--r8);padding:6px 9px;font-size:13px;
+  font-family:inherit;outline:none;transition:border-color .15s;width:100%
+}
+input:focus,select:focus{border-color:#378add;box-shadow:0 0 0 2px rgba(55,138,221,.15)}
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.05em;color:var(--tx3);text-align:left;padding:5px 5px 9px;border-bottom:.5px solid var(--bd);white-space:nowrap}
+.tbl td{padding:7px 4px;vertical-align:middle;border-bottom:.5px solid var(--bd)}
+.tbl tr:last-child td{border-bottom:none}
+.rb{background:var(--bg2);border:.5px solid var(--bd2);cursor:pointer;color:var(--tx3);font-size:12px;padding:3px 7px;border-radius:var(--r8);line-height:1;transition:color .15s,background .15s;font-family:inherit}
+.rb:hover{color:var(--tx-danger);background:var(--bg-danger);border-color:var(--tx-danger)}
+.ab{background:none;border:.5px solid var(--bd2);border-radius:var(--r8);padding:5px 12px;font-size:13px;color:var(--tx2);cursor:pointer;margin-top:10px;display:inline-flex;align-items:center;gap:6px;font-family:inherit;transition:background .15s,color .15s}
+.ab:hover{background:var(--bg2);color:var(--tx)}
+.divider{border:none;border-top:.5px solid var(--bd);margin:1.5rem 0}
+.rh{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.sbtns{display:flex;gap:6px}
+.sbtn{font-size:12px;padding:5px 14px;cursor:pointer;border-radius:var(--r8);border:.5px solid var(--bd2);background:transparent;color:var(--tx2);font-family:inherit;transition:all .15s}
+.sbtn:hover{background:var(--bg2)}
+.sbtn.on{background:var(--bg-info);color:var(--tx-info);border-color:#378add}
+.mc{background:var(--bg2);border-radius:var(--r8);padding:12px 14px}
+.ml{font-size:12px;color:var(--tx2);margin-bottom:4px}
+.mv{font-size:20px;font-weight:500;color:var(--tx)}
+.ms{font-size:11px;color:var(--tx3);margin-top:2px}
+.pos{color:var(--tx-success)!important}
+.neg{color:var(--tx-danger)!important}
+.tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:4px;font-weight:500}
+.t-r{background:var(--bg-danger);color:var(--tx-danger)}
+.t-h{background:var(--bg-success);color:var(--tx-success)}
+.t-m{background:var(--bg-warning);color:var(--tx-warning)}
+.t-l{background:var(--bg2);color:var(--tx2)}
+.basis-drg{background:var(--bg-info);color:var(--tx-info);font-size:10px;padding:1px 6px;border-radius:3px;font-weight:500;display:inline-block}
+.basis-pd{background:var(--bg2);color:var(--tx2);font-size:10px;padding:1px 6px;border-radius:3px;font-weight:500;display:inline-block}
+.rtbl th{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.05em;color:var(--tx3);text-align:left;padding:7px 9px 11px;border-bottom:.5px solid var(--bd);white-space:nowrap}
+.rtbl td{padding:10px 9px;font-size:13px;border-bottom:.5px solid var(--bd);color:var(--tx)}
+.rtbl tr:last-child td{border-bottom:none}
+.wbar{height:7px;border-radius:4px;min-width:3px;display:inline-block}
+.bp{background:#1D9E75}.bn{background:#E24B4A}
+.note{font-size:11px;color:var(--tx3);border-left:2px solid var(--bd2);padding:6px 10px;margin-top:12px;line-height:1.6}
+.expand-btn{background:var(--bg2);border:.5px solid var(--bd2);border-radius:var(--r8);cursor:pointer;color:var(--tx2);font-size:13px;padding:3px 7px;display:inline-flex;align-items:center;transition:color .15s,background .15s}
+.expand-btn:hover{color:var(--tx);background:var(--bg-info);border-color:#378add;color:var(--tx-info)}
+.detail-row{display:none;background:var(--bg2)}
+.detail-row.open{display:table-row}
+.detail-inner{padding:10px 8px 14px;display:grid;grid-template-columns:110px repeat(7,minmax(0,1fr));gap:10px;align-items:end}
+.detail-fld{display:flex;flex-direction:column;gap:3px}
+.detail-fld label{font-size:12px;color:var(--tx3)}
+.detail-section-label{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.05em;color:var(--tx3);line-height:1.4}
+.override{border-color:#378add !important;background:var(--bg-info) !important}
+.uc-card{background:var(--bg);border:.5px dashed var(--bd2);border-radius:var(--r12);padding:1rem 1.25rem;margin-bottom:12px}
+.uc-badge{font-size:10px;font-weight:500;background:var(--bg2);color:var(--tx3);padding:2px 8px;border-radius:3px;border:.5px solid var(--bd2);margin-left:8px;vertical-align:middle}
+.callout{font-size:12px;font-weight:500;color:var(--tx-info);background:var(--bg-info);border-radius:var(--r8);padding:8px 14px;margin-top:12px;border:.5px solid #378add33}
+.footer{font-size:11px;color:var(--tx3);text-align:center;margin-top:1.5rem}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:1000;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:var(--bg);border-radius:var(--r12);padding:2rem;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,0.3)}
+.modal h3{font-size:17px;font-weight:500;color:var(--tx);margin:0 0 8px}
+.modal p{font-size:13px;color:var(--tx2);margin:0 0 20px;line-height:1.6}
+.modal input{width:100%;box-sizing:border-box;margin-bottom:12px;font-size:14px;padding:10px 12px}
+.modal-btns{display:flex;gap:8px}
+.modal-submit{flex:1;padding:10px;background:#1a3b66;color:#fff;border:none;border-radius:var(--r8);font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;transition:background .15s}
+.modal-submit:hover{background:#0f2444}
+.modal-submit:disabled{background:#888;cursor:not-allowed}
+.modal-cancel{padding:10px 16px;background:none;border:.5px solid var(--bd2);border-radius:var(--r8);font-size:13px;color:var(--tx2);cursor:pointer;font-family:inherit}
+.modal-cancel:hover{background:var(--bg2)}
+.modal-error{font-size:12px;color:var(--tx-danger);margin-top:4px;display:none}
+.pdf-btn{margin-top:12px;width:100%;padding:11px;background:#1a3b66;color:#fff;border:none;border-radius:var(--r8);font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;transition:background .15s}
+.pdf-btn:hover{background:#0f2444}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Payer Contract Scenario Modeler</h1>
+<p class="sub">Rank payer contracts by modeled economic value after rate, denial assumptions, payment timing, and outlier exposure — so negotiation effort targets where contracts are truly underperforming.</p>
+<span class="disclaimer">&#9432; Strategic contract-prioritization prototype — not a contract valuation engine</span>
+
+<div class="card">
+  <div class="sl">Starting assumptions <span style="font-size:11px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--tx3)">— apply to all payers; override in contract detail row per payer</span></div>
+  <div class="g5">
+    <div class="fld"><label>Discount rate (% annual)</label><input type="number" id="g-disc" value="5" min="0" max="30" oninput="calc()"></div>
+    <div class="fld"><label>LOS (days)</label><input type="number" id="g-los" value="4" min="1" max="90" oninput="calc()"></div>
+    <div class="fld"><label>Outlier threshold ($)</label><input type="number" id="g-thresh" value="85000" min="0" oninput="calc()"></div>
+    <div class="fld"><label>Outlier cases per 100</label><input type="number" id="g-orate" value="3" min="0" max="20" step="0.5" oninput="calc()"></div>
+    <div class="fld"><label>Avg total outlier case cost ($)</label><input type="number" id="g-excess" value="140000" min="0" oninput="calc()"></div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:12px">
+    <div class="fld"><label>Reimbursed excess-cost share (%) <span style="font-weight:400;font-size:11px;color:var(--tx3)">— modeling assumption, not payer-specific</span></label><input type="number" id="g-oshare" value="75" min="0" max="100" oninput="calc()"></div>
+    <div class="fld"><label>Contract denial overturn (%)</label><input type="number" id="g-ovtContract" value="45" min="0" max="100" oninput="calc()"></div>
+    <div class="fld"><label>RCM denial overturn (%)</label><input type="number" id="g-ovtRCM" value="35" min="0" max="100" oninput="calc()"></div>
+  </div>
+  <div class="note">Adjust these to match your facility's baseline. Expand any payer row to override individual contract terms — overridden fields are highlighted blue.</div>
+</div>
+
+<div class="card">
+  <div class="sl">Modeled payer portfolio</div>
+  <div style="overflow-x:auto">
+    <table class="tbl">
+      <thead><tr>
+        <th style="width:28px"></th>
+        <th style="min-width:115px">Payer</th>
+        <th style="min-width:105px">Reimbursement basis</th>
+        <th style="min-width:58px">Vol/yr</th>
+        <th style="min-width:75px">Cur rate</th>
+        <th style="min-width:75px">Target / proposed</th>
+        <th style="min-width:58px">Contract denial %</th>
+        <th style="min-width:58px">RCM denial %</th>
+        <th style="min-width:78px">Carveout $</th>
+        <th style="min-width:68px">Days-to-pay</th>
+        <th style="min-width:28px"></th>
+      </tr></thead>
+      <tbody id="ptbody"></tbody>
+    </table>
+  </div>
+  <button class="ab" onclick="addPayer()">+ Add payer</button>
+  <div class="callout">Click the <strong>&#8964;</strong> chevron on any row to expand contract detail and override individual terms — overridden fields turn <strong>blue</strong>.</div>
+  <div class="note" style="margin-top:8px">Rate = $/day for per diem; $/admission for DRG (approximate — true DRG modeling requires CMI and MS-DRG weights). Medicare (IPPS) is paid per admission via the Inpatient Prospective Payment System — DRG-based, administratively set by CMS, included as benchmark. Medicaid State Plan reimbursement methodology varies by state — per diem shown here reflects common behavioral health and long-term care structures; acute care Medicaid may use APR-DRG or other state-specific methodologies. Target / proposed rate represents a modeling assumption for administratively set payers.</div>
+</div>
+
+<hr class="divider">
+
+<div class="rh">
+  <div class="sl" style="margin:0">Results</div>
+  <div class="sbtns">
+    <button class="sbtn on" onclick="setSc('base',this)">Base case</button>
+    <button class="sbtn" onclick="setSc('optimistic',this)">Optimistic</button>
+    <button class="sbtn" onclick="setSc('downside',this)">Downside</button>
+  </div>
+</div>
+
+<div class="g4" style="margin-bottom:16px" id="sumcards"></div>
+
+<div class="card">
+  <div class="sl">Payer analysis — modeled economic value</div>
+  <div style="overflow-x:auto">
+    <table class="tbl rtbl">
+      <thead><tr>
+        <th>Payer</th>
+        <th>Basis</th>
+        <th>Current PV</th>
+        <th>Proposed PV</th>
+        <th>Net impact</th>
+        <th>Contract denial drag</th>
+        <th>RCM denial drag</th>
+        <th>Outlier exp.</th>
+        <th>Contracting priority</th>
+      </tr></thead>
+      <tbody id="rtbody"></tbody>
+    </table>
+  </div>
+  <div class="note">
+    Present value (PV) = net revenue × 1/(1 + daily discount rate × days-to-pay). Simple time-value proxy — not a full cash-flow model.<br>
+    Contract denial drag = unrecovered revenue from payer-behavioral denials: auth requirements, contract term disputes, level-of-care challenges. Negotiable at the contract table. Uses contract denial overturn rate.<br>
+    RCM denial drag = unrecovered revenue from internal execution: documentation gaps, coding errors, timely filing failures. Operational fix, not a contract fix. Uses RCM denial overturn rate — typically lower than contract denials. HFMA benchmarks: 5–10% avg denial rate; &lt;5% optimal; 85% resolution within 30 days as target.<br>
+    Modeled outlier exposure = vol × outlier rate × max(0, avg total case cost − threshold) × provider share. Approximation only — Medicare uses fixed-loss thresholds, CCRs, and marginal payment factors.<br>
+    Contracting priority = weighted score combining dollar impact magnitude, contract denial burden, payment timing, and outlier exposure. Higher dollar impact carries more weight. Not a final contracting algorithm.
+  </div>
+</div>
+
+<div class="card">
+  <div class="sl">Net impact waterfall</div>
+  <div id="wfall"></div>
+</div>
+
+<button class="pdf-btn" onclick="openModal()">&#8681; Download PDF summary of results</button>
+
+<div class="uc-card">
+  <div class="sl">Uncompensated care reference <span class="uc-badge">not a negotiated contract</span></div>
+  <div style="display:flex;gap:12px;margin-top:8px;flex-wrap:wrap;align-items:flex-end">
+    <div class="fld" style="width:140px"><label style="font-size:12px;color:var(--tx2)">Annual encounters</label><input type="number" id="uc-enc" value="380" min="0" oninput="calcUC()"></div>
+    <div class="fld" style="width:170px"><label style="font-size:12px;color:var(--tx2)">Est. cash collections/case ($)</label><input type="number" id="uc-coll" value="180" min="0" oninput="calcUC()"></div>
+    <div style="display:flex;gap:20px;padding-bottom:6px">
+      <span style="font-size:13px;color:var(--tx2)" id="uc-vol-out"></span>
+      <span style="font-size:13px;font-weight:500;color:var(--tx)" id="uc-rev-out"></span>
+    </div>
+  </div>
+  <div class="note">Self-pay and charity care reflect uncompensated care burden and broader safety-net reimbursement context — analytically distinct from payer contract negotiations.</div>
+</div>
+
+
+<!-- Email modal -->
+<div class="modal-overlay" id="emailModal">
+  <div class="modal">
+    <h3>Get your PDF summary</h3>
+    <p>Enter your email and we'll send you the results plus free operator tools from Inflection Health Partners. No spam.</p>
+    <input type="email" id="modalEmail" placeholder="your@email.com" onkeydown="if(event.key==='Enter')submitModal()">
+    <div class="modal-error" id="modalError"></div>
+    <div class="modal-btns">
+      <button class="modal-submit" id="modalSubmit" onclick="submitModal()">Download PDF</button>
+      <button class="modal-cancel" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+<p class="footer">Inflection Health Partners &nbsp;·&nbsp; Payer Contract Scenario Modeler v10 &nbsp;·&nbsp; Strategic contract-prioritization prototype — not a contract valuation engine</p>
+</div>
+
+<script>
+let sc='base';
+const scm={base:1,optimistic:1.05,downside:.92};
+
+const dflt=[
+  {id:0,name:'Medicare (IPPS)',     type:'drg',vol:6600, cur:9800, prop:9800, dcontract:3, drcm:2, carveout:0,   dtp:14,los:null,thresh:null,oshare:null,orate:null,excess:null,ovtContract:null,ovtRCM:null},
+  {id:1,name:'Medicare Advantage', type:'drg',vol:3600, cur:8800, prop:9100, dcontract:11,drcm:5, carveout:1200,dtp:30,los:null,thresh:null,oshare:null,orate:null,excess:null,ovtContract:null,ovtRCM:null},
+  {id:2,name:'Medicaid State Plan', type:'pd', vol:1200, cur:920,  prop:950,  dcontract:7, drcm:5, carveout:2800,dtp:30,los:null,thresh:null,oshare:null,orate:null,excess:null,ovtContract:null,ovtRCM:null},
+  {id:3,name:'Medicaid MCO',       type:'pd', vol:2000, cur:850,  prop:875,  dcontract:12,drcm:6, carveout:3200,dtp:45,los:null,thresh:null,oshare:null,orate:null,excess:null,ovtContract:null,ovtRCM:null},
+  {id:4,name:'BCBS Commercial',    type:'drg',vol:2800, cur:22000,prop:23000,dcontract:6, drcm:4, carveout:1500,dtp:25,los:null,thresh:null,oshare:null,orate:null,excess:null,ovtContract:null,ovtRCM:null},
+  {id:5,name:'UHC Commercial',     type:'drg',vol:1600, cur:19500,prop:20000,dcontract:9, drcm:5, carveout:1800,dtp:38,los:null,thresh:null,oshare:null,orate:null,excess:null,ovtContract:null,ovtRCM:null},
+  {id:6,name:'Aetna Commercial',   type:'drg',vol:1000, cur:18000,prop:18000,dcontract:7, drcm:4, carveout:2000,dtp:33,los:null,thresh:null,oshare:null,orate:null,excess:null,ovtContract:null,ovtRCM:null},
+];
+
+let payers=dflt.map(p=>({...p}));
+let nid=payers.length;
+let expanded={};
+
+function basisLabel(t){
+  return t==='drg'
+    ?'<span class="basis-drg">DRG approx</span>'
+    :'<span class="basis-pd">Per diem</span>';
+}
+
+function gv(id){return +document.getElementById(id).value||0;}
+
+function detVal(p,field,gField){
+  return p[field]!=null ? p[field] : gv(gField);
+}
+
+function rowHTML(p){
+  const isOpen=!!expanded[p.id];
+  const na='';
+  function dv(f){return p[f]!=null?p[f]:na;}
+  function oc(f){return p[f]!=null?'class="override"':'';}
+  return `
+<tr id="pr${p.id}">
+  <td><button class="expand-btn" onclick="toggleDetail(${p.id})" aria-label="Expand contract detail"><span id="chv${p.id}" style="font-size:11px;font-weight:600">${isOpen?'&#9650;':'&#9660;'}</span></button></td>
+  <td><input type="text"   value="${p.name}"     style="width:110px" oninput="upd(${p.id},'name',this.value)"></td>
+  <td><select style="width:98px" onchange="upd(${p.id},'type',this.value)">
+    <option value="drg" ${p.type==='drg'?'selected':''}>DRG ($/admit)</option>
+    <option value="pd"  ${p.type==='pd' ?'selected':''}>Per diem ($/day)</option>
+  </select></td>
+  <td><input type="number" value="${p.vol}"      style="width:72px"  oninput="upd(${p.id},'vol',+this.value)"></td>
+  <td><input type="number" value="${p.cur}"      style="width:88px"  oninput="upd(${p.id},'cur',+this.value)"></td>
+  <td><input type="number" value="${p.prop}"     style="width:88px"  oninput="upd(${p.id},'prop',+this.value)"></td>
+  <td><input type="number" value="${p.dcontract}" style="width:50px" title="Payer-driven denials — contract terms, auth behavior" oninput="upd(${p.id},'dcontract',+this.value)"></td>
+  <td><input type="number" value="${p.drcm}"      style="width:50px" title="Internal RCM denials — documentation, coding, timely filing" oninput="upd(${p.id},'drcm',+this.value)"></td>
+  <td><input type="number" value="${p.carveout}"  style="width:68px" oninput="upd(${p.id},'carveout',+this.value)"></td>
+  <td><input type="number" value="${p.dtp}"      style="width:58px"  oninput="upd(${p.id},'dtp',+this.value)"></td>
+  <td><button class="rb" onclick="remP(${p.id})" aria-label="Remove payer">&#10005;</button></td>
+</tr>
+<tr id="det${p.id}" class="detail-row${isOpen?' open':''}">
+  <td colspan="11">
+    <div class="detail-inner">
+      <div class="detail-section-label">Contract<br>detail<br><span style="font-weight:400;font-size:10px;color:var(--tx3)">blue = override</span></div>
+      <div class="detail-fld">
+        <label>LOS (days)</label>
+        <input type="number" placeholder="from assumptions" value="${dv('los')}" min="1" max="90" ${oc('los')} oninput="updDetail(${p.id},'los',this)">
+      </div>
+      <div class="detail-fld">
+        <label>Outlier threshold ($)</label>
+        <input type="number" placeholder="from assumptions" value="${dv('thresh')}" min="0" ${oc('thresh')} oninput="updDetail(${p.id},'thresh',this)">
+      </div>
+      <div class="detail-fld">
+        <label>Reimbursed excess-cost share (%) <span style="font-weight:400;font-size:10px;color:var(--tx3)">— per contract</span></label>
+        <input type="number" value="${p.oshare!=null?p.oshare:''}" placeholder="from assumptions" min="0" max="100" ${oc('oshare')} oninput="updDetail(${p.id},'oshare',this)">
+      </div>
+      <div class="detail-fld">
+        <label>Outlier cases per 100</label>
+        <input type="number" placeholder="from assumptions" value="${dv('orate')}" min="0" max="20" step="0.5" ${oc('orate')} oninput="updDetail(${p.id},'orate',this)">
+      </div>
+      <div class="detail-fld">
+        <label>Avg total outlier case cost ($)</label>
+        <input type="number" placeholder="from assumptions" value="${dv('excess')}" min="0" ${oc('excess')} oninput="updDetail(${p.id},'excess',this)">
+      </div>
+      <div class="detail-fld">
+        <label>Contract denial overturn (%)</label>
+        <input type="number" value="${p.ovtContract!=null?p.ovtContract:''}" placeholder="45" min="0" max="100" ${oc('ovtContract')} oninput="updDetail(${p.id},'ovtContract',this)">
+      </div>
+      <div class="detail-fld">
+        <label>RCM denial overturn (%)</label>
+        <input type="number" value="${p.ovtRCM!=null?p.ovtRCM:''}" placeholder="35" min="0" max="100" ${oc('ovtRCM')} oninput="updDetail(${p.id},'ovtRCM',this)">
+      </div>
+    </div>
+  </td>
+</tr>`;
+}
+
+function renderPayers(){
+  document.getElementById('ptbody').innerHTML=payers.map(rowHTML).join('');
+}
+
+function toggleDetail(id){
+  expanded[id]=!expanded[id];
+  const row=document.getElementById('det'+id);
+  const chv=document.getElementById('chv'+id);
+  if(row) row.classList.toggle('open',!!expanded[id]);
+  if(chv) chv.innerHTML=expanded[id]?'&#9650;':'&#9660;';
+}
+
+function addPayer(){
+  const id=nid++;
+  payers.push({id,name:'New payer',type:'drg',vol:100,cur:9000,prop:9000,dcontract:5,drcm:3,carveout:1000,dtp:28,
+    los:null,thresh:null,oshare:null,orate:null,excess:null,ovtContract:null,ovtRCM:null});
+  renderPayers();calc();
+}
+
+function remP(id){
+  payers=payers.filter(p=>p.id!==id);
+  delete expanded[id];
+  renderPayers();calc();
+}
+
+function upd(id,f,v){
+  const p=payers.find(p=>p.id===id);
+  if(p)p[f]=v;
+  calc();
+}
+
+function updDetail(id,f,input){
+  const p=payers.find(p=>p.id===id);
+  if(!p) return;
+  const v=input.value.trim();
+  if(v===''||isNaN(+v)){
+    p[f]=null;
+    input.classList.remove('override');
+  } else {
+    p[f]=+v;
+    input.classList.add('override');
+  }
+  calc();
+}
+
+function setSc(s,btn){
+  sc=s;
+  document.querySelectorAll('.sbtn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  calc();
+}
+
+function fmt(n){return'$'+Math.round(n).toLocaleString();}
+function pvF(dtp,d){return 1/(1+(d/100/365)*dtp);}
+
+function calcUC(){
+  const enc  = +document.getElementById('uc-enc').value  || 0;
+  const coll = +document.getElementById('uc-coll').value || 0;
+  document.getElementById('uc-vol-out').textContent = enc.toLocaleString()+' encounters';
+  document.getElementById('uc-rev-out').textContent = fmt(enc*coll)+' est. collections';
+}
+
+function calc(){
+  const disc    = gv('g-disc')   || 5;
+  const gLos    = gv('g-los')    || 5;
+  const gThresh = gv('g-thresh') || 75000;
+  const gOrate  = (gv('g-orate') || 3)/100;
+  const gExcess = gv('g-excess') || 120000;
+  const mult    = scm[sc];
+
+  let tCur=0,tProp=0,tOE=0;
+  const rows=[];
+
+  payers.forEach(p=>{
+    const vol    = p.vol*mult;
+    const los    = p.los    !=null ? p.los    : gLos;
+    const thresh = p.thresh !=null ? p.thresh : gThresh;
+    const oshare = (p.oshare!=null ? p.oshare : (gv('g-oshare')||75))/100;
+    const orate  = (p.orate !=null ? p.orate  : gOrate*100)/100;
+    const excess = p.excess !=null ? p.excess : gExcess;
+    const ovtContract = (p.ovtContract!=null ? p.ovtContract : (gv('g-ovtContract')||45))/100;
+    const ovtRCM      = (p.ovtRCM     !=null ? p.ovtRCM      : (gv('g-ovtRCM')||35))/100;
+    // ovtContract and ovtRCM used directly below; blendedOvt used for net revenue
+
+    const unitCur  = p.type==='drg' ? p.cur  : p.cur *los;
+    const unitProp = p.type==='drg' ? p.prop : p.prop*los;
+    const gCur     = Math.max(0, vol*(unitCur  - p.carveout));
+    const gProp    = Math.max(0, vol*(unitProp - p.carveout));
+    const dc       = ((p.dcontract||0) + (p.drcm||0))/100;  // total denial rate
+    const dcContract = (p.dcontract||0)/100;               // contract-driven portion
+    const dcRCM    = (p.drcm||0)/100;                      // RCM/operational portion
+    const dLC      = gCur * dc;
+    const dLP      = gProp* dc;
+    const blendedOvt = (dcContract*ovtContract + dcRCM*ovtRCM) / Math.max(dc, 0.001);
+    const aRC      = dLC*blendedOvt;
+    const aRP      = dLP*blendedOvt;
+    const nCur     = gCur  - dLC + aRC;
+    const nProp    = gProp - dLP + aRP;
+    const ddContract = gCur * dcContract * (1-ovtContract); // contract-driven unrecovered
+    const ddRCM      = gCur * dcRCM      * (1-ovtRCM);      // RCM-driven unrecovered
+    const pv       = pvF(p.dtp, disc);
+    const curPV    = nCur *pv;
+    const propPV   = nProp*pv;
+    const dd       = dLC*(1-blendedOvt);  // total drag, blended overturn
+    const oExp     = vol * orate * Math.max(0, excess - thresh) * (1-oshare);
+    const impact   = propPV - curPV;
+
+    tCur  += curPV;
+    tProp += propPV;
+    // dd tracked per-row; no global accumulator needed
+    tOE   += oExp;
+    rows.push({p,curPV,propPV,impact,dd,ddContract,ddRCM,oExp});
+  });
+
+  const tot=tProp-tCur;
+  rows.sort((a,b)=>Math.abs(b.impact)-Math.abs(a.impact));
+
+  document.getElementById('sumcards').innerHTML=[
+    {l:'Current PV revenue',       v:fmt(tCur),  s:'modeled portfolio, timing-adjusted',c:''},
+    {l:'Proposed PV revenue',      v:fmt(tProp), s:'at proposed / target rates',         c:''},
+    {l:'Net PV impact',            v:(tot>=0?'+':'')+fmt(tot),s:'present-value basis',   c:tot>=0?'pos':'neg'},
+    {l:'Modeled outlier exposure', v:fmt(tOE),   s:'provider share above threshold',     c:'neg'},
+  ].map(m=>`<div class="mc"><p class="ml">${m.l}</p><p class="mv ${m.c}">${m.v}</p><p class="ms">${m.s}</p></div>`).join('');
+
+  // Priority score: weighted by dollar magnitude, not just threshold triggers
+  const maxImpactAbs = Math.max(...rows.map(r=>Math.abs(r.impact)),1);
+  function ptag(r){
+    const dollarWeight = Math.abs(r.impact)/maxImpactAbs;        // 0-1, relative magnitude
+    const contractDenialHigh = (r.p.dcontract||0) > 8;          // payer-driven, negotiable
+    const timingBad = r.p.dtp > 40;
+    const outlierHeavy = r.oExp/Math.max(tOE,1) > 0.25;
+    const score = (r.impact<0?3:0)                               // negative impact = urgent
+                + dollarWeight*2                                  // weight by dollar size
+                + (contractDenialHigh?1:0)
+                + (timingBad?0.5:0)
+                + (outlierHeavy?0.5:0);
+    if(score>=3)  return'<span class="tag t-r">Renegotiate</span>';
+    if(score>=1.5)return'<span class="tag t-h">High priority</span>';
+    if(r.p.prop>r.p.cur||score>=0.8)return'<span class="tag t-m">Monitor</span>';
+    return'<span class="tag t-l">Hold</span>';
+  }
+
+  document.getElementById('rtbody').innerHTML=rows.map(r=>`<tr>
+    <td style="font-weight:500">${r.p.name}</td>
+    <td>${basisLabel(r.p.type)}</td>
+    <td>${fmt(r.curPV)}</td>
+    <td>${fmt(r.propPV)}</td>
+    <td class="${r.impact>=0?'pos':'neg'}">${r.impact>=0?'+':''}${fmt(r.impact)}</td>
+    <td class="neg">${fmt(r.ddContract)}</td>
+    <td class="neg">${fmt(r.ddRCM)}</td>
+    <td class="neg">${fmt(r.oExp)}</td>
+    <td>${ptag(r)}</td>
+  </tr>`).join('');
+
+  const mx=Math.max(...rows.map(r=>Math.abs(r.impact)),1);
+  document.getElementById('wfall').innerHTML=
+    rows.map(r=>{
+      const w=Math.max(4,Math.round(Math.abs(r.impact)/mx*460));
+      return`<div style="display:flex;align-items:center;gap:10px;margin-bottom:9px">
+        <span style="width:150px;font-size:12px;flex-shrink:0;color:var(--tx)">${r.p.name}</span>
+        <span class="wbar ${r.impact>=0?'bp':'bn'}" style="width:${w}px"></span>
+        <span style="font-size:12px;color:var(--tx2)">${r.impact>=0?'+':''}${fmt(r.impact)}</span>
+      </div>`;
+    }).join('')+
+    `<div style="display:flex;align-items:center;gap:10px;margin-top:10px;padding-top:10px;border-top:.5px solid var(--bd)">
+      <span style="width:150px;font-size:13px;font-weight:500;flex-shrink:0;color:var(--tx)">Total</span>
+      <span style="font-size:14px;font-weight:500" class="${tot>=0?'pos':'neg'}">${tot>=0?'+':''}${fmt(tot)}</span>
+    </div>`;
+
+  calcUC();
+}
+
+renderPayers();
+calc();
+
+function openModal(){
+  document.getElementById('emailModal').classList.add('open');
+  setTimeout(()=>document.getElementById('modalEmail').focus(),100);
+}
+
+function closeModal(){
+  document.getElementById('emailModal').classList.remove('open');
+  document.getElementById('modalError').style.display='none';
+  document.getElementById('modalEmail').value='';
+  document.getElementById('modalSubmit').disabled=false;
+  document.getElementById('modalSubmit').textContent='Download PDF';
+}
+
+async function submitModal(){
+  const email=document.getElementById('modalEmail').value.trim();
+  const errEl=document.getElementById('modalError');
+  const btn=document.getElementById('modalSubmit');
+  errEl.style.display='none';
+  if(!email||!email.includes('@')){
+    errEl.textContent='Please enter a valid email address.';
+    errEl.style.display='block';
+    return;
+  }
+  btn.disabled=true;
+  btn.textContent='Sending...';
+
+  // Collect current model state for PDF
+  const sc_label = document.querySelector('.sbtn.on')?.textContent||'Base case';
+  const rows_data = [];
+  payers.forEach(p=>{
+    const los   = p.los    !=null?p.los    :+document.getElementById('g-los').value||4;
+    const thresh= p.thresh !=null?p.thresh :+document.getElementById('g-thresh').value||85000;
+    const oshare= (p.oshare!=null?p.oshare :(+document.getElementById('g-oshare').value||75))/100;
+    const orate = (p.orate !=null?p.orate  :(+document.getElementById('g-orate').value||3))/100;
+    const excess= p.excess !=null?p.excess :+document.getElementById('g-excess').value||140000;
+    const ovtC  = (p.ovtContract!=null?p.ovtContract:(+document.getElementById('g-ovtContract').value||45))/100;
+    const ovtR  = (p.ovtRCM    !=null?p.ovtRCM     :(+document.getElementById('g-ovtRCM').value||35))/100;
+    const disc  = +document.getElementById('g-disc').value||5;
+    const mult  = {base:1,optimistic:1.05,downside:.92}[sc]||1;
+    const vol   = p.vol*mult;
+    const unitC = p.type==='drg'?p.cur :p.cur *los;
+    const unitP = p.type==='drg'?p.prop:p.prop*los;
+    const gC    = Math.max(0,vol*(unitC-p.carveout));
+    const gP    = Math.max(0,vol*(unitP-p.carveout));
+    const dc    = ((p.dcontract||0)+(p.drcm||0))/100;
+    const dcC   = (p.dcontract||0)/100;
+    const dcR   = (p.drcm||0)/100;
+    const dLC   = gC*dc;
+    const dLP   = gP*dc;
+    const blended=(dcC*ovtC+dcR*ovtR)/Math.max(dc,0.001);
+    const nC    = gC-dLC+dLC*blended;
+    const nP    = gP-dLP+dLP*blended;
+    const pvF   = 1/(1+(disc/100/365)*p.dtp);
+    const curPV = nC*pvF;
+    const propPV= nP*pvF;
+    const ddC   = gC*dcC*(1-ovtC);
+    const ddR   = gC*dcR*(1-ovtR);
+    const oExp  = vol*orate*Math.max(0,excess-thresh)*(1-oshare);
+    const impact= propPV-curPV;
+    // priority label
+    const maxImpAbs=Math.max(...payers.map(pp=>Math.abs(propPV-curPV)),1);
+    const dW=Math.abs(impact)/maxImpAbs;
+    const score=(impact<0?3:0)+dW*2+((p.dcontract||0)>8?1:0)+(p.dtp>40?0.5:0)+(oExp/Math.max(1,oExp)>.25?0.5:0);
+    const priority=score>=3?'Renegotiate':score>=1.5?'High priority':p.prop>p.cur||score>=0.8?'Monitor':'Hold';
+    rows_data.push({
+      name:p.name,
+      basis:p.type==='drg'?'DRG approx':'Per diem',
+      curPV,propPV,impact,ddContract:ddC,ddRCM:ddR,oExp,priority
+    });
+  });
+  rows_data.sort((a,b)=>Math.abs(b.impact)-Math.abs(a.impact));
+
+  const summary={
+    curPV:rows_data.reduce((s,r)=>s+r.curPV,0),
+    propPV:rows_data.reduce((s,r)=>s+r.propPV,0),
+    impact:rows_data.reduce((s,r)=>s+r.impact,0),
+    oExp:rows_data.reduce((s,r)=>s+r.oExp,0)
+  };
+  summary.impact=summary.propPV-summary.curPV;
+
+  const assumptions={
+    disc:document.getElementById('g-disc').value,
+    los:document.getElementById('g-los').value,
+    thresh:document.getElementById('g-thresh').value,
+    orate:document.getElementById('g-orate').value,
+    excess:document.getElementById('g-excess').value,
+    oshare:document.getElementById('g-oshare').value,
+    ovtContract:document.getElementById('g-ovtContract').value,
+    ovtRCM:document.getElementById('g-ovtRCM').value
+  };
+
+  try {
+    // Subscribe to Beehiiv
+    const subRes = await fetch('/.netlify/functions/payer-subscribe', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'subscribe',email})
+    });
+    if(!subRes.ok) console.warn('Subscription issue — continuing to PDF');
+
+    // Get PDF HTML
+    btn.textContent='Generating...';
+    const pdfRes = await fetch('/.netlify/functions/payer-subscribe', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'pdf',rows:rows_data,summary,scenario:sc_label,assumptions})
+    });
+    if(!pdfRes.ok) throw new Error('PDF generation failed');
+
+    const pdfHtml = await pdfRes.text();
+    const blob = new Blob([pdfHtml],{type:'text/html'});
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href=url; a.download='payer-contract-analysis.html'; a.click();
+    URL.revokeObjectURL(url);
+    closeModal();
+  } catch(e) {
+    console.error(e);
+    errEl.textContent='Something went wrong. Please try again.';
+    errEl.style.display='block';
+    btn.disabled=false;
+    btn.textContent='Download PDF';
+  }
+}
+
+document.getElementById('emailModal').addEventListener('click',function(e){
+  if(e.target===this) closeModal();
+});
+</script>
+</body>
+</html>
